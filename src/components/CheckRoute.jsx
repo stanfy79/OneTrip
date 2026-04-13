@@ -3,8 +3,7 @@ import { Search, Disc, MapPin } from "lucide-react";
 import { DataContext } from "../context/Context";
 import LoaderImg from "../assets/loader-gif.png";
 
-const MAPBOX_TOKEN =
-  "pk.eyJ1IjoiYnVpbGRkdWRlIiwiYSI6ImNtbms4bTg5czBubjMycHFybjJ6OXlvbzkifQ.1ZXXfIP8Z3Ee_YSJ-GtQZQ";
+const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_KEY;
 
 function CheckRoute() {
   const { fetchCoordinates, getRouteInfo, newRouteEntry, getUserInfo } =
