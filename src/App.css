@@ -1,0 +1,147 @@
+@import url('https://fonts.googleapis.com/css2?family=Audiowide&family=Climate+Crisis:YEAR@1979&family=Vina+Sans&display=swap');
+
+.vina-sans {
+  font-family: "Vina Sans", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.climate-crisis {
+  font-family: "Climate Crisis", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  font-variation-settings:
+    "YEAR" 1979;
+}
+
+.audiowide {
+  font-family: "Audiowide", sans-serif;
+  font-weight: 900;
+  font-style: normal;
+}
+
+* {
+  box-sizing: border-box;
+  transition: all 0.3s ease-in;
+}
+ html, body {
+  padding: 0;
+  margin: 0;
+  background-color: #050c1d;
+  overflow-x: hidden;
+}
+
+#map-container {
+  width: 100%;
+  margin: auto;
+  max-width: 900px;
+  min-height: 400px;
+  border-radius: 20px;
+  overflow: hidden;
+ }
+
+ .no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+ .custom-scrollbar::-webkit-scrollbar {
+  background: transparent;
+  width: 10px;
+  height: 5px;
+}
+ .custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #6dbb71;
+  border-radius: 50px;
+  width: 10px;
+}
+ .custom-scrollbar::-webkit-scrollbar-track {
+  background: #6dbb7135;
+}
+
+input[type="time"]::-webkit-calendar-picker-indicator {
+  filter: invert(100%) sepia(100%) grayscale(100%) brightness(200%);
+}
+
+.reveal-up {
+  opacity: 0;
+  transform: translateY(60px);
+  transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.reveal-up.revealed {
+  animation: slideInUp 0.8s ease-out forwards;
+}
+
+.reveal-left {
+  opacity: 0;
+  transform: translateX(-160px);
+  transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.reveal-left.revealed {
+  animation: slideInLeft 0.8s ease-out forwards;
+}
+
+.reveal-right {
+  opacity: 0;
+  transform: translateX(160px);
+  transition: all 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.reveal-right.revealed {
+  animation: slideInRight 1.5s ease-out forwards;
+}
+
+.reveal-scale {
+  opacity: 0;
+  transform: scale(0.8);
+  transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.reveal-scale.revealed {
+  animation: scaleIn 0.8s ease-out forwards;
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(100px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-60px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(60px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
