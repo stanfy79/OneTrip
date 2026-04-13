@@ -57,8 +57,7 @@ function RoutesMap() {
   }, [routeData]);
 
   useEffect(() => {
-    mapboxgl.accessToken =
-      "pk.eyJ1IjoiYnVpbGRkdWRlIiwiYSI6ImNtbms4bTg5czBubjMycHFybjJ6OXlvbzkifQ.1ZXXfIP8Z3Ee_YSJ-GtQZQ";
+    mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_KEY;
 
     const map = new mapboxgl.Map({
       container: mapContainerRef.current,
