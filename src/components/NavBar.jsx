@@ -48,7 +48,7 @@ function NavBar() {
       <div className="w-[100%] fixed flex justify-between md:hidden z-30 px-5 h-[0px] bg-[#00000099] backdrop-blur-[5px]">
         <div className="flex flex-col place-items-start mt-5">
           <h2 className="text-[#6dbb71] text-2xl font-extrabold audiowide">
-            Fare AI
+            OneTrip
           </h2>
           <p className="text-[#808387] text-[10px]">The Fastest Route</p>
         </div>
@@ -118,7 +118,7 @@ function NavBar() {
       <div className="w-[100%] flex flex-row justify-between place-items-center fixed bottom-0 md:top-0 px-1 md:px-5 py-2 backdrop-blur-[5px] bg-[#00000099] md:bg-[#6dbb7122] z-50 h-18">
         <div className="hidden md:flex flex-col place-items-start">
           <h2 className="text-[#6dbb71] text-2xl font-extrabold audiowide">
-            Fare AI
+            OneTrip
           </h2>
           <p className="text-[#808387] text-[10px]">The Fastest Route</p>
         </div>

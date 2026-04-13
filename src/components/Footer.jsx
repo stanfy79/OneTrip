@@ -7,7 +7,7 @@ function Footer() {
       <div className="max-w-[1280px] mx-auto px-6 py-12 flex flex-col gap-10 md:flex-row md:justify-between">
         <div className="max-w-sm space-y-4">
           <div>
-            <h2 className="text-3xl font-black audiowide text-[#6dbb71]">Fare AI</h2>
+            <h2 className="text-3xl font-black audiowide text-[#6dbb71]">OneTrip</h2>
             <p className="text-[#8f98a8] text-sm mt-1">The Fastest Route for smarter transport decisions.</p>
           </div>
           <p className="text-[#9ea6b6] leading-7 text-[15px]">
@@ -46,7 +46,7 @@ function Footer() {
       </div>
 
       <div className="max-w-[1280px] mx-auto px-6 pb-8 text-[#8f98a8] text-sm flex flex-col gap-4 md:flex-row md:justify-between md:items-center">
-        <p>© {new Date().getFullYear()} Fare AI. All rights reserved.</p>
+        <p>© {new Date().getFullYear()} OneTrip. All rights reserved.</p>
         <div className="flex flex-wrap gap-4 text-[#b3bac8]">
           <Link to="/" className="hover:text-[#6dbb71]">Privacy</Link>
           <Link to="/" className="hover:text-[#6dbb71]">Terms</Link>
