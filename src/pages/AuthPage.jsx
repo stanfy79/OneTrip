@@ -1,7 +1,8 @@
-import React, { use, useEffect } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import Signup from '../components/Signup'
-import Login from '../components/Login'
+import React, { use, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import Signup from '../components/Signup';
+import Login from '../components/Login';
+import NavBar from "../components/NavBar";
 import { useAuth } from '../context/AuthContext';
 import busImage from "../assets/green-bus.png";
 import kekeImage from "../assets/green-bike.png";
@@ -20,7 +21,8 @@ function AuthPage() {
 
   return (
     <div className="min-h-screen bg-[#080d21]">
-      <div className="flex flex-col md:flex-row">
+      <NavBar />
+      <div className="flex flex-col mt-18 md:flex-row">
         <div className="bg-[#080d21] w-full">
           {mode === "signup" ? <Signup /> : <Login />}
         </div>

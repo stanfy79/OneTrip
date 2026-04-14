@@ -1,41 +1,49 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { Eye, EyeOff } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 
 function Signup() {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [username, setUsername] = useState('');
-    const [message, setMessage] = useState('');
-    const [nameCheck, setNameCheck] = useState('');
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const { auth, signup } = useAuth();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confPassword, setConfPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showPassword2, setShowPassword2] = useState(false);
+  const [username, setUsername] = useState("");
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { auth, signup } = useAuth();
 
-
-    function checkUserNameExists(username) {
-        const users = JSON.parse(localStorage.getItem('users')) || [];
-        users.some(user => user.userName === username) ? setNameCheck("Username not available") : setNameCheck("Available");
+  function confirmPassword() {
+    if (password !== confPassword) {
+      setError("New password and confirmation do not match.");
+      setSaving(false);
+      return;
     }
-    function handleSignup(e) {
-        e.preventDefault();
-        setIsSubmitting(true);
-        if (auth?.user?.email === email) {
-            setIsSubmitting(false);
-            return setMessage("You already have an account. Please login!");
-        }
-        const userId = crypto.randomUUID();
-        const data = {
-            email: email,
-            userName: username,
-            password: password,
-            userId: userId,
-            contribution: 0,
-        }
-        signup(data);
-        setMessage('');
-    }
+    setError("");
+  }
 
-  
+  function handleSignup(e) {
+    e.preventDefault();
+    confirmPassword();
+    setIsSubmitting(true);
+    if (auth?.user?.email === email) {
+      setIsSubmitting(false);
+      return setMessage("You already have an account. Please login!");
+    }
+    const userId = crypto.randomUUID();
+    const data = {
+      email: email,
+      userName: username,
+      password: password,
+      userId: userId,
+      contribution: 0,
+    };
+    signup(data);
+    setMessage("");
+  }
+
   return (
     <>
       <div className="flex items-center gap-3 text-sm font-semibold uppercase tracking-[0.34em] text-[#6dbb71] mt-5 ml-5">
@@ -84,16 +92,50 @@ function Signup() {
 
           <div>
             <label className="mb-2 block text-sm font-medium text-slate-400">
-              Password
+              Create Password
             </label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter your password"
-              className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 shadow-sm transition focus:border-[#6dbb71] focus:outline-none focus:ring-2 focus:ring-[#6dbb71]/30"
-              required
-            />
+            <div className="relative">
+              {" "}
+              <input
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter your password"
+                className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 shadow-sm transition focus:border-[#6dbb71] focus:outline-none focus:ring-2 focus:ring-[#6dbb71]/30 pr-12"
+                required
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-[#6dbb71] transition"
+              >
+                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <label className="mb-2 block text-sm font-medium text-slate-400">
+              Confirm Password
+            </label>
+            <div className="relative">
+              {" "}
+              <input
+                type={showPassword2 ? "text" : "password"}
+                onChange={(e) => setConfPassword(e.target.value)}
+                placeholder="Enter your password again"
+                className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 shadow-sm transition focus:border-[#6dbb71] focus:outline-none focus:ring-2 focus:ring-[#6dbb71]/30"
+                required
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword2(!showPassword2)}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-[#6dbb71] transition"
+              >
+                {showPassword2 ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
+            </div>
+            {error && <p className="text-sm text-rose-300 p-2">{error}</p>}
           </div>
 
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -125,13 +167,16 @@ function Signup() {
 
         <div className="mt-6 border-t border-slate-200/80 pt-6 text-center text-sm text-slate-500">
           Don&apos;t have an account?{" "}
-          <Link to="/auth?mode=login" className="font-semibold text-[#6dbb71] hover:text-[#5daa60]">
+          <Link
+            to="/auth?mode=login"
+            className="font-semibold text-[#6dbb71] hover:text-[#5daa60]"
+          >
             Login
           </Link>
         </div>
       </div>
     </>
-  )
+  );
 }
 
 export default Signup;

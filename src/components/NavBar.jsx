@@ -45,18 +45,18 @@ function NavBar() {
 
   return (
     <>
-      <div className="w-[100%] fixed flex justify-between md:hidden z-30 px-5 h-[0px] bg-[#00000099] backdrop-blur-[5px]">
-        <div className="flex flex-col place-items-start mt-5">
+      <div className="w-[100%] fixed flex justify-between items-center md:hidden top-0 z-30 px-5 h-18 bg-[#00000000] backdrop-blur-[10px]">
+        <div className="flex flex-col place-items-start">
           <h2 className="text-[#6dbb71] text-2xl font-extrabold audiowide">
             OneTrip
           </h2>
           <p className="text-[#808387] text-[10px]">The Fastest Route</p>
         </div>
 
-        <div className="flex gap-3.5 py-7 rounded-[50px] bg-[#9a9da330] place-items-center mt-5 scale-75 -mr-6">
+        <div className="flex gap-3.5 py-2 rounded-[50px] bg-[#9a9da314] place-items-center scale-75 -mr-6">
           {auth.token ? (
             <div
-              className="flex gap-3.5 py-2 px-4 rounded-[50px] bg-[#9a9da31a] place-items-center hover:scale-102 cursor-pointer transition-transform"
+              className="flex gap-3.5 py-2 px-4 rounded-[50px] bg-[#9a9da30f] place-items-center hover:scale-102 cursor-pointer transition-transform"
               onClick={() => setShowProfile(true)}
             >
               <div className="w-15 h-15 rounded-full text-white bg-[#111412] font-semibold flex items-center justify-center text-3xl shadow-md shadow-[#6dbb7167] border-2 border-[#719672b9]">

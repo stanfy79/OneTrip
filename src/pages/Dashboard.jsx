@@ -25,10 +25,10 @@ function Dashboard() {
     totalFareSpent: 14000,
     badges: ["Elite Scout"],
     rankings: {
-      position: 12,
-      topRoutes: 4,
+      position: 1,
+      topRoutes: 0,
       routesSubmitted: 28,
-      followers: 8400,
+      followers: 0,
     },
     topPeers: [
       {

@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import NavBar from "../components/NavBar";
+import DeleteModal from "../components/DeleteModal";
+import LogoutModal from "../components/LogoutModal";
 import {
   ShieldCheck,
   Bell,
@@ -45,6 +47,8 @@ function Settings() {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   useEffect(() => {
     if (!auth?.token) {
@@ -113,19 +117,40 @@ function Settings() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
-  function handleDeleteAccount() {
-    const confirmed = window.confirm(
-      "Delete account? This will remove your profile and all saved preferences.",
-    );
-    if (confirmed) {
-      deleteAccount();
-    }
-  }
+  const handleDeleteBtn = () => {
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleLogoutBtn = () => {
+    setIsModalOpen(true);
+  };
+
+  const confirmDelete = () => {
+    deleteAccount();
+    setIsDeleteModalOpen(false);
+  };
+
+  const confirmLogout = () => {
+    logout();
+    setIsModalOpen(false);
+  };
 
   return (
     <>
       <NavBar />
       <div className="min-h-screen bg-gradient-to-br from-neutral-900 to-slate-800 px-2 py-6 md:px-6 pt-24 text-slate-100">
+        <DeleteModal
+          isOpen={isDeleteModalOpen}
+          onClose={() => setIsDeleteModalOpen(false)}
+          onConfirm={confirmDelete}
+        />
+
+        <LogoutModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onConfirm={confirmLogout}
+        />
+
         <div className="max-w-7xl mx-auto space-y-6">
           <div className="flex px-4 flex-col gap-4 md:flex-row md:items-end md:justify-between">
             <div>
@@ -150,7 +175,7 @@ function Settings() {
               </Link>
               <button
                 type="button"
-                onClick={() => logout()}
+                onClick={() => handleLogoutBtn()}
                 className="inline-flex items-center gap-2 rounded-2xl bg-[#6dbb71] px-4 py-3 text-sm font-semibold text-slate-900 transition hover:bg-[#c34343]"
               >
                 Logout
@@ -163,7 +188,7 @@ function Settings() {
               onSubmit={handleSaveSettings}
               className="space-y-6 rounded-3xl border border-[#2f4e33] bg-[#08100f] p-6 shadow-xl shadow-[#00000080]"
             >
-              <div className="space-y-5">
+              <div className="space-y-5 max-w-2xl mx-auto">
                 <div className="rounded-3xl border border-slate-700 bg-[#0d1714] p-5">
                   <div className="flex items-center justify-between gap-4">
                     <div>
@@ -216,7 +241,15 @@ function Settings() {
                         placeholder="Paste Image URL"
                       />
                       <p className="mt-5 text-[#96d799]">Preview:</p>
-                      <p>{profile.profileUrl && <img src={profile.profileUrl} alt="Profile" className="mt-2 w-30 h-30 object-cover border-2 border-[#6dbb71] rounded-full" />}</p>
+                      <p>
+                        {profile.profileUrl && (
+                          <img
+                            src={profile.profileUrl}
+                            alt="Profile"
+                            className="mt-2 w-30 h-30 object-cover border-2 border-[#6dbb71] rounded-full"
+                          />
+                        )}
+                      </p>
                     </label>
                   </div>
                 </div>
@@ -315,7 +348,7 @@ function Settings() {
                 </div>
               </div>
 
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between max-w-2xl mx-auto">
                 <div className="space-y-1">
                   <p className="text-sm font-medium text-slate-300">
                     Preferred theme
@@ -364,14 +397,14 @@ function Settings() {
               <button
                 type="submit"
                 disabled={saving}
-                className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-[#6dbb71] px-5 py-4 text-sm font-semibold text-slate-900 transition hover:bg-[#5daa60] disabled:cursor-not-allowed disabled:opacity-70"
+                className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#6dbb71] px-5 py-4 text-sm font-semibold text-slate-900 transition hover:bg-[#5daa60] disabled:cursor-not-allowed disabled:opacity-70 max-w-2xl mx-auto"
               >
                 <CheckCircle2 size={18} />{" "}
                 {saving ? "Saving..." : "Save changes"}
               </button>
             </form>
 
-            <aside className="space-y-6">
+            <aside className="space-y-6 max-w-2xl mx-auto">
               <div className="rounded-3xl border border-slate-700 bg-[#0d1714] p-6 shadow-xl shadow-[#00000080]">
                 <div className="flex items-center gap-3">
                   <div className="flex h-12 w-12 items-center justify-center rounded-3xl bg-[#15271f] text-[#6dbb71]">
@@ -443,7 +476,7 @@ function Settings() {
                   </p>
                   <button
                     type="button"
-                    onClick={handleDeleteAccount}
+                    onClick={handleDeleteBtn}
                     className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-[#b33a45] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#a73944]"
                   >
                     Delete account
