@@ -134,7 +134,7 @@ function SubmitRoute() {
     form.reset();
     newDataEntry(newEntry);
     setUserActivities()
-    if (submitStatus === 201) {
+    if (submitStatus === true) {
       setIsSubmitting(false);
       setIsSubmitted(true);
     }

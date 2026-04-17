@@ -19,7 +19,7 @@ export function DataProvider({ children }) {
 
   async function newDataEntry(newEntry) {
     const res = await axios.post(`${BASE_URL}/submit-route`, newEntry);
-    setSubmitStatus(res.status);
+    setSubmitStatus(res.success);
     return res.data.data;
   }
 
