@@ -131,10 +131,11 @@ function SubmitRoute() {
       timeOfDay: selectedTime,
     };
     setValidationError("");
-    form.reset();
+    // form.reset();
     newDataEntry(newEntry);
     setUserActivities()
-    if (submitStatus === true) {
+    console.log(submitStatus)
+    if (submitStatus) {
       setIsSubmitting(false);
     }
   }
