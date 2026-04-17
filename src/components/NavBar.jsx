@@ -15,11 +15,12 @@ import { DataContext } from "../context/Context";
 
 function NavBar() {
   const { auth, logout } = useAuth();
-  const { getUserInfo } = useContext(DataContext);
+  const { user } = useContext(DataContext);
   const [showProfile, setShowProfile] = useState(false);
+  // const [user, setUser] = useState(null);
   const activeTab = window.location.pathname;
-  const userInfo = getUserInfo();
   const menuRef = useRef(null);
+  
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -60,22 +61,22 @@ function NavBar() {
               onClick={() => setShowProfile(true)}
             >
               <div className="w-15 h-15 rounded-full text-white bg-[#111412] font-semibold flex items-center justify-center text-3xl shadow-md shadow-[#6dbb7167] border-2 border-[#719672b9]">
-                {userInfo?.profileUrl ? (
+                {user?.profileUrl ? (
                   <img
-                    src={userInfo.profileUrl}
+                    src={user.profileUrl}
                     alt="Profile"
                     className="w-full h-full object-cover rounded-full"
                   />
                 ) : (
-                  userInfo?.userName?.charAt(0)
+                  user?.username?.charAt(0)
                 )}
               </div>
               <div className="flex flex-col">
                 <p className="text-[#ffffff] text-[14px]">
-                  {userInfo?.userName || "User"}
+                  {user?.username || "User"}
                 </p>
                 <span className="text-[10px] text-[#808387]">
-                  Rank ({userInfo?.rank || 0})
+                  Rank ({user?.rank || 0})
                 </span>
               </div>
               {showProfile && (
@@ -84,7 +85,7 @@ function NavBar() {
                   ref={menuRef}
                 >
                   <span className="text-[#6dbb71] audiowide p-3">
-                    ✨{userInfo.points} Points
+                    ✨{user.points} Points
                   </span>
                   <Link to="/dashboard">
                     <span className="text-[#9a9da3] flex gap-2 hover:text-[#6dbb71] w-full rounded-lg hover:bg-[#c9e3ca34] p-2">
@@ -166,13 +167,12 @@ function NavBar() {
               className="cursor-pointer"
               onClick={() => setShowProfile(true)}
             >
-              <img src="" alt="" className="w-[40px] rounded-full" />
               <div className="flex flex-col">
                 <p className="text-[#ffffff] text-[14px]">
-                  {userInfo?.userName || "User"}
+                  {user?.username || "User"}
                 </p>
                 <span className="text-[10px] text-[#808387]">
-                  Rank ({userInfo?.rank || 0})
+                  Rank ({user?.rank || 0})
                 </span>
               </div>
               {showProfile && (
@@ -181,7 +181,7 @@ function NavBar() {
                   ref={menuRef}
                 >
                   <span className="text-[#6dbb71] audiowide p-3">
-                    ✨{userInfo.points} Points
+                    ✨{user.points} Points
                   </span>
                   <Link to="/dashboard">
                     <span className="text-[#9a9da3] flex gap-2 hover:text-[#6dbb71] w-full rounded-lg hover:bg-[#c9e3ca34] p-2">

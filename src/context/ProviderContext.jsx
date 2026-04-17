@@ -1,111 +1,188 @@
-import React, { useState, createContext } from "react";
+import React, { useState, createContext, useEffect } from "react";
 import { DataContext } from "./Context";
+import axios from "axios";
 
 export function DataProvider({ children }) {
-  const [coordinates, setCoordinates] = useState([{
-    current: null,
-    destination: null,
-  }]);
+  const [coordinates, setCoordinates] = useState([
+    {
+      current: null,
+      destination: null,
+    },
+  ]);
   const [routeInfo, setRouteInfo] = useState();
+  const [searchedData, setSearchedData] = useState([]);
+  const [submittedData, setSubmittedData] = useState([]);
+  const [submitStatus, setSubmitStatus] = useState(null);
+  const [user, setUser] = useState(null);
 
-  function newDataEntry(newEntry) {
-    const existingData = getFareData();
-    localStorage.setItem(
-      "fareData",
-      JSON.stringify([...existingData, newEntry]),
-    );
+  const BASE_URL = `${import.meta.env.VITE_BASE_URL}/user`;
+
+  async function newDataEntry(newEntry) {
+    const res = await axios.post(`${BASE_URL}/submit-route`, newEntry);
+    setSubmitStatus(res.status);
+    return res.data.data;
   }
-  
-  function getFareData() {
-    const data = localStorage.getItem("fareData");
-    return data ? JSON.parse(data) : [];
-  }
 
-
-  function newRouteEntry(newEntry) {
-    const existingData = getRouteData();
-    if (!newEntry.routeDetails?.estimatedCost) {
-      throw new Error("Estimated cost is required for a route entry. Check the route location and try again.");
+  async function getFareData() {
+    try {
+      const res = await axios.get(`${BASE_URL}/get-searched-routes`);
+      setSearchedData(res.data.data || []);
+      return res.data.data || [];
+    } catch (err) {
+      console.log("failed to fetched searched routes:", err);
+      return [];
     }
-    localStorage.setItem(
-      "routeData",
-      JSON.stringify([...existingData, newEntry]),
-    );
   }
-  
-  function getRouteData() {
-    const data = localStorage.getItem("routeData");
-    return data ? JSON.parse(data) : [];
+
+  async function newRouteEntry(newEntry) {
+    if (!newEntry.routeDetails?.estimatedCost) {
+      throw new Error(
+        "Estimated cost is required for a route entry. Check the route location and try again.",
+      );
+    }
+
+    const res = await axios.post(`${BASE_URL}/save-searched`, newEntry);
+    return res.data.data;
+  }
+
+  async function getRouteData() {
+    try {
+      const res = await axios.get(`${BASE_URL}/get-submitted-routes`);
+      setSubmittedData(res.data.data || []);
+      return res.data.data || [];
+    } catch (err) {
+      console.log("failed to fetched submitted routes:", err);
+      return [];
+    }
   }
 
   const fetchCoordinates = async (current, destination) => {
     // const API_KEY = "f1e9581bd16d23351da332b38be51206";
 
     const response = await fetch(
-      `https://nominatim.openstreetmap.org/search?format=json&q=${current},lagos,nigeria&limit=1`
+      `https://nominatim.openstreetmap.org/search?format=json&q=${current},lagos,nigeria&limit=1`,
     )
       .then((res) => res.json())
       .catch((error) => {
         console.error("Error fetching coordinates:", error);
         return null;
       });
-      
+
     const destResponse = await fetch(
-      `https://nominatim.openstreetmap.org/search?format=json&q=${destination},lagos,nigeria&limit=1`)
+      `https://nominatim.openstreetmap.org/search?format=json&q=${destination},lagos,nigeria&limit=1`,
+    )
       .then((res) => res.json())
       .catch((error) => {
         console.error("Error fetching coordinates:", error);
         return null;
       });
-      setCoordinates({ current: response, destination: destResponse });
-      console.log("Fetched coordinates:", coordinates);
-      return { current: response, destination: destResponse };
-    };
+    setCoordinates({ current: response, destination: destResponse });
+    console.log("Fetched coordinates:", coordinates);
+    return { current: response, destination: destResponse };
+  };
 
-    const calculateCost = (distance) => {
-      const ratePerKm = 100;
+  const calculateCost = (distance) => {
+    const ratePerKm = 90;
 
-      // Formula: Base + (Distance * Rate)
-      const total = distance * ratePerKm;
+    // Formula: Base + (Distance * Rate)
+    const total = distance * ratePerKm;
 
-      return total;
-    }
+    return total;
+  };
 
   const getRouteInfo = (distance, duration) => {
     const cost = calculateCost(distance);
     const info = {
-      distance: distance.toString() + ' KM',
+      distance: distance.toString() + " KM",
       duration: duration.toString(),
       estimatedCost: cost,
     };
     setRouteInfo(info);
-    console.log('distsance', JSON.stringify(routeInfo))
+    console.log("distsance", JSON.stringify(routeInfo));
     return info;
-  }
+  };
 
-  const getUserInfo = () => {
-      const userData = localStorage.getItem("user");
-      return userData ? JSON.parse(userData) : null;
-  }
+  const getUserInfo = async () => {
+    const token = { _id: localStorage.getItem("token") };
+    const res = await axios.post(`${BASE_URL}/details`, token);
 
-  const setUserActivities = () => {
-    const user = getUserInfo();
-    const name = user?.userName;
-    const getContributions = getFareData().filter(entry => entry.contributor === name);
-    const totalSpent = getContributions.reduce((total, entry) => total + Number(entry.amount), 0);
+    const userData = {
+      username: res.data.data?.username,
+      email: res.data.data?.email,
+      preferences: res.data.data?.preferences || {
+        notifications: {
+          email: true,
+          routeAlerts: true,
+          productUpdates: true,
+        },
+        privacy: {
+          showProfile: true,
+          shareActivity: false,
+        },
+        theme: "dark",
+      },
+      contribution: res.data.data?.contribution || 0,
+      profileUrl: res.data.data?.profileUrl || "",
+      points: res.data.data?.points || 0,
+      totalSpent: res.data.data?.totalSpent || 0,
+      id: res.data.data?.id,
+      token: res.data.data?.token,
+      _id: res.data.data?._id,
+    };
+    setUser(userData);
+    return userData;
+  };
+
+  const setUserActivities = async () => {
+    const name = user?.username;
+    if (!name) return;
+
+    const getContributions = (submittedData || []).filter(
+      (entry) => entry.contributor === name,
+    );
+    const totalSpent = getContributions.reduce(
+      (total, entry) => total + Number(entry.amount || 0),
+      0,
+    );
     const userContributions = getContributions.length;
-    const points = userContributions * 10 * (totalSpent / 1000);
-    const updatedUser = { ...user, contribution: userContributions, totalSpent: totalSpent, points: points };
+    const UpdatePoint = userContributions * 10 * (totalSpent / 1000);
+    const points = Math.round(UpdatePoint);
+    const updatedUser = {
+      ...user,
+      contribution: userContributions,
+      totalSpent,
+      points,
+    };
+    const payload = { updatedUser };
+    const res = await axios.post(`${BASE_URL}/update`, payload);
+  };
 
-    localStorage.setItem("user", JSON.stringify(updatedUser));
-  }
-  setUserActivities();
-  
-  
+  useEffect(() => {
+    getFareData();
+    getRouteData();
+    setUserActivities();
+    getUserInfo().catch((err) =>
+      console.error("failed to fetch user info:", err),
+    );
+  }, []);
 
   return (
     <DataContext.Provider
-      value={{ getFareData, newDataEntry, fetchCoordinates, getRouteInfo, newRouteEntry, getRouteData, coordinates, routeInfo, getUserInfo }}
+      value={{
+        getFareData,
+        newDataEntry,
+        fetchCoordinates,
+        getRouteInfo,
+        newRouteEntry,
+        coordinates,
+        routeInfo,
+        submitStatus,
+        searchedData,
+        submittedData,
+        getUserInfo,
+        setUserActivities,
+        user,
+      }}
     >
       {children}
     </DataContext.Provider>

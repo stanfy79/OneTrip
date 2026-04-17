@@ -18,30 +18,32 @@ function Signup() {
   function confirmPassword() {
     if (password !== confPassword) {
       setError("New password and confirmation do not match.");
-      setSaving(false);
+      setIsSubmitting(false);
       return;
     }
     setError("");
   }
 
-  function handleSignup(e) {
+  async function handleSignup(e) {
     e.preventDefault();
     confirmPassword();
+    if (error) return;
+    
     setIsSubmitting(true);
-    if (auth?.user?.email === email) {
-      setIsSubmitting(false);
-      return setMessage("You already have an account. Please login!");
-    }
+    
     const userId = crypto.randomUUID();
     const data = {
       email: email,
-      userName: username,
+      username: username,
       password: password,
-      userId: userId,
-      contribution: 0,
+      id: userId
     };
-    signup(data);
-    setMessage("");
+    
+    await signup(data);
+    
+    if (auth?.token) {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -146,15 +148,15 @@ function Signup() {
               />
               Remember for 30 days
             </label>
-            <a
+            {/* <a
               href="#"
               className="text-sm font-medium text-[#6dbb71] hover:text-[#5daa60]"
             >
               Forgot password?
-            </a>
+            </a> */}
           </div>
 
-          {message && <p className="text-sm text-rose-500">{message}</p>}
+          {auth?.message && <p className="text-sm text-rose-300 font-medium bg-rose-500/10 p-3 rounded-lg">{auth?.message}</p>}
 
           <button
             type="submit"

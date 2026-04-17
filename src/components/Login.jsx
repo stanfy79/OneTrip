@@ -7,27 +7,23 @@ function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [message, setMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { auth, login } = useAuth();
 
-  function handleLogin(e) {
+  async function handleLogin(e) {
     e.preventDefault();
-    setMessage("");
     setIsSubmitting(true);
 
-    if (auth?.user?.email === email && auth?.user?.password === password) {
-      setMessage("Login successful!");
-      const loginData = {
-        email,
-        password,
-      };
-      login(loginData);
+    const loginData = {
+      email,
+      password,
+    };
+
+    await login(loginData);
+
+    if (auth.token != String) {
       setIsSubmitting(false);
-      return;
     }
-    setIsSubmitting(false);
-    return setMessage("incorrect email or password");
   }
 
   return (
@@ -55,7 +51,7 @@ function Login() {
             <input
               type="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => setEmail(e.target.value.toLowerCase())}
               placeholder="you@example.com"
               className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 shadow-sm transition focus:border-[#6dbb71] focus:outline-none focus:ring-2 focus:ring-[#6dbb71]/30"
               required
@@ -102,7 +98,11 @@ function Login() {
             </a>
           </div>
 
-          {message && <p className="text-sm text-blue-300">{message}</p>}
+          {auth?.message && (
+            <p className="text-sm text-rose-300 font-medium bg-rose-500/10 p-3 rounded-lg">
+              {auth?.message}
+            </p>
+          )}
 
           <button
             type="submit"

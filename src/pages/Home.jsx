@@ -13,11 +13,14 @@ import busImage from "../assets/green-bus.png";
 import kekeImage from "../assets/green-bike.png";
 
 function Home() {
-  const { getFareData } = useContext(DataContext);
+  const { submittedData, getFareData } = useContext(DataContext);
   const elementRef = useRef(null);
   const inViewRef = useRef(false);
   const lastScrollY = useRef(0);
   const heroReveal = useScrollReveal();
+  const [routeData, setRouteData] = useState(null);
+
+  getFareData()
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -60,7 +63,7 @@ function Home() {
         ticking = true;
       }
     };
-
+console.log(routeData)
     window.addEventListener("scroll", handleScroll);
     return () => {
       observer.disconnect();
@@ -85,10 +88,10 @@ function Home() {
               backgroundColor: "rgba(0, 0, 0, 0.6)",
             }}
           >
-            <h1 className="text-white text-5xl climate-crisis">
+            <h1 className="text-white text-6xl nunito-sans">
               Smart travel for
             </h1>
-            <h1 className="text-[#6dbb71] text-4xl climate-crisis">
+            <h1 className="text-[#6dbb71] text-5xl nunito-sans">
               modern curator.
             </h1>
             <p className="text-[#879286] text-[15px]">
@@ -98,22 +101,24 @@ function Home() {
 
             <p className="text-[16px] text-white mt-12">
               <span className="text-5xl text-[#b14b6f] audiowide">
-                +{getFareData().length}
+                +{submittedData?.length || 0}
               </span>{" "}
               Total Contributions
             </p>
             <p className=" text-[16px] text-white mt-2">
               <span className="text-5xl text-[#b14b6f] audiowide">
                 ₦
-                {getFareData()
-                  .reduce((sum, entry) => sum + parseFloat(entry.amount), 0).toLocaleString()}
+                {(submittedData?.reduce((sum, entry) => sum + parseFloat(entry.amount || 0), 0) || 0).toLocaleString()}
               </span>{" "}
               Total Spent by Commuters
             </p>
           </div>
 
           <div className="flex relative justify-center gap-10 mt-20">
-            <div ref={elementRef} className="absolute top-50 left-0 md:top-0 md:relative w-[40%]">
+            <div
+              ref={elementRef}
+              className="absolute top-50 left-0 md:top-0 md:relative w-[40%]"
+            >
               <img
                 src={busImage}
                 alt="Green Bus"

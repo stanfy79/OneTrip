@@ -22,7 +22,7 @@ import bgImage from "../assets/hero-bg.png";
 import roadImage from "../assets/road-image.jpg";
 
 function Trips() {
-  const { getFareData } = useContext(DataContext);
+  const { submittedData } = useContext(DataContext);
   const elementRef = useRef(null);
   const inViewRef = useRef(false);
   const lastScrollY = useRef(0);
@@ -76,7 +76,7 @@ function Trips() {
     };
   }, []);
 
-  const fareData = getFareData()
+  const fareData = submittedData
     .toReversed()
     .map((entry, index) => (
       <div

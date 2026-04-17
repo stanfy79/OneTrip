@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import NavBar from "../components/NavBar";
 import DeleteModal from "../components/DeleteModal";
 import LogoutModal from "../components/LogoutModal";
+import { DataContext } from "../context/Context";
 import {
   ShieldCheck,
   Bell,
@@ -15,18 +16,17 @@ import {
 } from "lucide-react";
 
 function Settings() {
-  const { auth, updateUser, deleteAccount, logout } = useAuth();
+  const { auth, updateUser, updatePassword, deleteAccount, logout } = useAuth();
+  const { user } = useContext(DataContext);
   const navigate = useNavigate();
-  const user = auth?.user || JSON.parse(localStorage.getItem("user")) || {};
 
   const [profile, setProfile] = useState({
-    email: user.email || "",
-    username: user.userName || "",
-    profileUrl: user.profileUrl || "",
+    email: user?.email || "",
+    username: user?.username || "",
+    profileUrl: user?.profileUrl || "",
   });
 
   const [security, setSecurity] = useState({
-    currentPassword: "",
     newPassword: "",
     confirmPassword: "",
   });
@@ -86,21 +86,7 @@ function Settings() {
     setMessage("");
     setSaving(true);
 
-    if (security.newPassword || security.confirmPassword) {
-      if (security.newPassword !== security.confirmPassword) {
-        setError("New password and confirmation do not match.");
-        setSaving(false);
-        return;
-      }
-      if (security.currentPassword !== user.password) {
-        setError("Current password is incorrect.");
-        setSaving(false);
-        return;
-      }
-    }
-
     const updatedFields = {
-      userName: profile.username,
       email: profile.email,
       preferences,
       profileUrl: profile.profileUrl,
@@ -115,6 +101,34 @@ function Settings() {
     setSecurity({ currentPassword: "", newPassword: "", confirmPassword: "" });
     setSaving(false);
     window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function handleUpdatePassword(e) {
+    e.preventDefault();
+    setError("");
+    setMessage("");
+    setSaving(true);
+
+    if (security.newPassword || security.confirmPassword) {
+      if (security.newPassword !== security.confirmPassword) {
+        setError("New password and confirmation do not match.");
+        setSaving(false);
+        return;
+      }
+    }
+
+    const updatedFields = {
+      password: profile.email,
+    };
+
+    if (security.newPassword) {
+      updatedFields.password = security.newPassword;
+    }
+
+    updatePassword(updatedFields);
+    setMessage("Settings saved successfully.");
+    setSecurity({ currentPassword: "", newPassword: "", confirmPassword: "" });
+    setSaving(false);
   }
 
   const handleDeleteBtn = () => {
@@ -258,59 +272,6 @@ function Settings() {
                   <div className="flex items-center justify-between gap-4">
                     <div>
                       <h2 className="text-lg font-semibold text-white">
-                        Security
-                      </h2>
-                      <p className="mt-1 text-sm text-slate-400">
-                        Change your password and keep your account locked down.
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-2 rounded-2xl bg-[#13241d] px-3 py-2 text-sm text-[#6dbb71]">
-                      <LockIcon />
-                      Password
-                    </div>
-                  </div>
-
-                  <div className="mt-6 grid gap-4 md:grid-cols-3">
-                    <label className="block text-sm text-slate-300">
-                      Current password
-                      <input
-                        name="currentPassword"
-                        type="password"
-                        value={security.currentPassword}
-                        onChange={handleSecurityChange}
-                        className="mt-2 w-full rounded-2xl border border-slate-700 bg-[#07110f] px-4 py-3 text-slate-100 outline-none focus:border-[#6dbb71] focus:ring-2 focus:ring-[#6dbb71]/20"
-                        placeholder="Current password"
-                      />
-                    </label>
-                    <label className="block text-sm text-slate-300">
-                      New password
-                      <input
-                        name="newPassword"
-                        type="password"
-                        value={security.newPassword}
-                        onChange={handleSecurityChange}
-                        className="mt-2 w-full rounded-2xl border border-slate-700 bg-[#07110f] px-4 py-3 text-slate-100 outline-none focus:border-[#6dbb71] focus:ring-2 focus:ring-[#6dbb71]/20"
-                        placeholder="New password"
-                      />
-                    </label>
-                    <label className="block text-sm text-slate-300">
-                      Confirm password
-                      <input
-                        name="confirmPassword"
-                        type="password"
-                        value={security.confirmPassword}
-                        onChange={handleSecurityChange}
-                        className="mt-2 w-full rounded-2xl border border-slate-700 bg-[#07110f] px-4 py-3 text-slate-100 outline-none focus:border-[#6dbb71] focus:ring-2 focus:ring-[#6dbb71]/20"
-                        placeholder="Confirm new password"
-                      />
-                    </label>
-                  </div>
-                </div>
-
-                <div className="rounded-3xl border border-slate-700 bg-[#0d1714] p-5">
-                  <div className="flex items-center justify-between gap-4">
-                    <div>
-                      <h2 className="text-lg font-semibold text-white">
                         Notifications
                       </h2>
                       <p className="mt-1 text-sm text-slate-400">
@@ -406,6 +367,61 @@ function Settings() {
 
             <aside className="space-y-6 max-w-2xl mx-auto">
               <div className="rounded-3xl border border-slate-700 bg-[#0d1714] p-6 shadow-xl shadow-[#00000080]">
+                <div className="rounded-3xl mb-8 border border-slate-700 bg-[#0d1714] p-5">
+                  <div className="flex items-center justify-between gap-4">
+                    <div>
+                      <h2 className="text-lg font-semibold text-white">
+                        Security
+                      </h2>
+                      <p className="mt-1 text-sm text-slate-400">
+                        Change your password and keep your account locked down.
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2 rounded-2xl bg-[#13241d] px-3 py-2 text-sm text-[#6dbb71]">
+                      <LockIcon />
+                      Password
+                    </div>
+                  </div>
+
+                  <div className="">
+                    <form onSubmit={handleUpdatePassword}
+                    className="mt-6 flex flex-col gap-4">
+                      <label className="block text-sm text-slate-300">
+                        New password
+                        <input
+                          name="newPassword"
+                          type="password"
+                          required
+                          value={security.newPassword}
+                          onChange={handleSecurityChange}
+                          className="mt-2 w-full rounded-2xl border border-slate-700 bg-[#07110f] px-4 py-3 text-slate-100 outline-none focus:border-[#6dbb71] focus:ring-2 focus:ring-[#6dbb71]/20"
+                          placeholder="New password"
+                        />
+                      </label>
+                      <label className="block text-sm text-slate-300">
+                        Confirm password
+                        <input
+                          name="confirmPassword"
+                          type="password"
+                          required
+                          value={security.confirmPassword}
+                          onChange={handleSecurityChange}
+                          className="mt-2 w-full rounded-2xl border border-slate-700 bg-[#07110f] px-4 py-3 text-slate-100 outline-none focus:border-[#6dbb71] focus:ring-2 focus:ring-[#6dbb71]/20"
+                          placeholder="Confirm new password"
+                        />
+                      </label>
+                      <button
+                        type="submit"
+                        disabled={saving}
+                        className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#6dbb71] px-5 py-4 text-sm font-semibold text-slate-900 transition hover:bg-[#5daa60] disabled:cursor-not-allowed disabled:opacity-70 max-w-2xl mx-auto"
+                      >
+                        <CheckCircle2 size={18} />{" "}
+                        {saving ? "Changing..." : "Change Password"}
+                      </button>
+                    </form>
+                  </div>
+                </div>
+
                 <div className="flex items-center gap-3">
                   <div className="flex h-12 w-12 items-center justify-center rounded-3xl bg-[#15271f] text-[#6dbb71]">
                     <ShieldCheck size={24} />

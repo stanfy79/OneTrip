@@ -19,7 +19,8 @@ const MAPBOX_TOKEN =
   "pk.eyJ1IjoiYnVpbGRkdWRlIiwiYSI6ImNtbms4bTg5czBubjMycHFybjJ6OXlvbzkifQ.1ZXXfIP8Z3Ee_YSJ-GtQZQ";
 
 function SubmitRoute() {
-  const { getFareData, newDataEntry, getUserInfo } = useContext(DataContext);
+  const { getFareData, newDataEntry, user, submitStatus, setUserActivities } =
+    useContext(DataContext);
   const [transportMode, setTransportMode] = useState("");
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
@@ -113,7 +114,6 @@ function SubmitRoute() {
       return { hours, minutes };
     }
     const duration = getDuration(startTime, endTime);
-    const userInfo = getUserInfo();
 
     const form = e.target;
     const newEntry = {
@@ -121,7 +121,7 @@ function SubmitRoute() {
       to: form.destination.value.toUpperCase(),
       transportMode: transportMode.toUpperCase(),
       amount: form.amount.value,
-      contributor: userInfo.userName,
+      contributor: user.username || "Anonymous",
       timeOfTrip: {
         start: startTime,
         end: endTime,
@@ -133,10 +133,11 @@ function SubmitRoute() {
     setValidationError("");
     form.reset();
     newDataEntry(newEntry);
-    setTimeout(() => {
+    setUserActivities()
+    if (submitStatus === 201) {
       setIsSubmitting(false);
       setIsSubmitted(true);
-    }, 2000);
+    }
   }
 
   return (
@@ -144,8 +145,10 @@ function SubmitRoute() {
       <NavBar />
       <div className="p-6 mt-30 w-full flex flex-col items-center">
         {isSubmitted && (
-          <div className="fixed w-[95%] max-w-90 h-50 rounded-3xl bg-[#6dbb71]/20 backdrop-blur-[5px] border border-[#6dbb71]/30 flex flex-col items-center justify-center gap-4 z-10 reveal-up revealed"
-          ref={dialogReff}>
+          <div
+            className="fixed w-[95%] max-w-90 h-50 rounded-3xl bg-[#6dbb71]/20 backdrop-blur-[5px] border border-[#6dbb71]/30 flex flex-col items-center justify-center gap-4 z-10 reveal-up revealed"
+            ref={dialogReff}
+          >
             <CircleCheckBig size={50} color="#6dbb71" />
             <span className="text-white font-mono text-lg">
               Contribution Submitted!
@@ -153,9 +156,7 @@ function SubmitRoute() {
             <button
               type="button"
               className="w-[90%] text-white bg-[#6dbb71] hover:bg-[#5ca961] py-2 px-4 rounded-lg"
-              onClick={() =>
-                (dialogReff.current.style.display = "none")
-              }
+              onClick={() => (dialogReff.current.style.display = "none")}
             >
               Continue
             </button>

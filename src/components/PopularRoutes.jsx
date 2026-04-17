@@ -19,7 +19,7 @@ import { DataContext } from "../context/Context";
 function PopularRoutes() {
   const inViewRef = useRef(false);
   const lastScrollY = useRef(0);
-  const { getRouteData } = useContext(DataContext);
+  const { searchedData } = useContext(DataContext);
 
 
   useEffect(() => {
@@ -61,7 +61,7 @@ function PopularRoutes() {
     };
   }, []);
 
-  const routeData = getRouteData();
+  const routeData = searchedData;
 
   return (
     <div className="">

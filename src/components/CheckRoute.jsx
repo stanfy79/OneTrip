@@ -6,7 +6,7 @@ import LoaderImg from "../assets/loader-gif.png";
 const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_KEY;
 
 function CheckRoute() {
-  const { fetchCoordinates, getRouteInfo, newRouteEntry, getUserInfo } =
+  const { fetchCoordinates, getRouteInfo, newRouteEntry, user } =
     useContext(DataContext);
   const [current, setCurrent] = useState("");
   const [destination, setDestination] = useState("");
@@ -34,7 +34,6 @@ function CheckRoute() {
     }
   };
 
-  
   useEffect(() => {
     const timeoutId = setTimeout(
       () => fetchSuggestions(current, "origin"),
@@ -42,7 +41,6 @@ function CheckRoute() {
     );
     return () => clearTimeout(timeoutId);
   }, [current]);
-
 
   useEffect(() => {
     const timeoutId = setTimeout(
@@ -61,6 +59,7 @@ function CheckRoute() {
       setShowSuggest((prev) => ({ ...prev, dest: false }));
     }
   };
+
 
   const getRoute = async (e) => {
     e.preventDefault();
@@ -94,7 +93,6 @@ function CheckRoute() {
 
       const key = Math.random().toString(36).substring(2, 8).toUpperCase();
       const now = new Date();
-      const userInfo = getUserInfo();
 
       const newEntry = {
         from: current.toUpperCase(),
@@ -113,7 +111,7 @@ function CheckRoute() {
           .toUpperCase(),
         routeDetails,
         Key: key,
-        contributor: userInfo?.userName || "Anonymous",
+        contributor: user.username || "Anonymous",
       };
       newRouteEntry(newEntry);
     } catch (error) {
@@ -137,7 +135,7 @@ function CheckRoute() {
             <Disc size={"20"} color="#6dbb71" />
             <input
               type="text"
-              value={current} 
+              value={current}
               placeholder="Current Location (Yaba)"
               className="text-white bg-transparent border-none outline-none w-full"
               onChange={(e) => {
@@ -171,12 +169,12 @@ function CheckRoute() {
             <MapPin size={"20"} color="#6dbb71" />
             <input
               type="text"
-              value={destination} 
+              value={destination}
               placeholder="Where to? (Oshodi)"
               className="text-white bg-transparent border-none outline-none w-full"
               onChange={(e) => {
-                setDestination(e.target.value); 
-                setShowSuggest({ ...showSuggest, dest: true }); 
+                setDestination(e.target.value);
+                setShowSuggest({ ...showSuggest, dest: true });
               }}
             />
           </div>
