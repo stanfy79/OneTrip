@@ -85,7 +85,7 @@ function Dashboard() {
               <div className="w-20 h-20 rounded-full text-white bg-[#111412] font-extrabold flex items-center justify-center text-3xl border-2 border-[#719672b9]">
                 {user?.profileUrl ? (
                   <img
-                    src={user.profileUrl}
+                    src={user?.profileUrl}
                     alt="Profile"
                     className="w-full h-full object-cover rounded-full"
                   />

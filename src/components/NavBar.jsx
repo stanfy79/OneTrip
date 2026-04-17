@@ -85,7 +85,7 @@ function NavBar() {
                   ref={menuRef}
                 >
                   <span className="text-[#6dbb71] audiowide p-3">
-                    ✨{user.points} Points
+                    ✨{user?.points} Points
                   </span>
                   <Link to="/dashboard">
                     <span className="text-[#9a9da3] flex gap-2 hover:text-[#6dbb71] w-full rounded-lg hover:bg-[#c9e3ca34] p-2">
@@ -181,7 +181,7 @@ function NavBar() {
                   ref={menuRef}
                 >
                   <span className="text-[#6dbb71] audiowide p-3">
-                    ✨{user.points} Points
+                    ✨{user?.points} Points
                   </span>
                   <Link to="/dashboard">
                     <span className="text-[#9a9da3] flex gap-2 hover:text-[#6dbb71] w-full rounded-lg hover:bg-[#c9e3ca34] p-2">
