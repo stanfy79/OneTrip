@@ -134,17 +134,17 @@ function SubmitRoute() {
     // form.reset();
     newDataEntry(newEntry);
     setUserActivities()
-    console.log(submitStatus)
-    if (submitStatus) {
+    
+    setTimeout(() => {
       setIsSubmitting(false);
-    }
+    }, 2000);
   }
 
   return (
     <div className="flex flex-row mb-30">
       <NavBar />
       <div className="p-6 mt-30 w-full flex flex-col items-center">
-        {isSubmitted && (
+        {!isSubmitted && (
           <div
             className="fixed w-[95%] max-w-90 h-50 rounded-3xl bg-[#6dbb71]/20 backdrop-blur-[5px] border border-[#6dbb71]/30 flex flex-col items-center justify-center gap-4 z-10 reveal-up revealed"
             ref={dialogReff}
