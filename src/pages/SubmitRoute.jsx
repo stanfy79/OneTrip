@@ -136,7 +136,6 @@ function SubmitRoute() {
     setUserActivities()
     if (submitStatus === true) {
       setIsSubmitting(false);
-      setIsSubmitted(true);
     }
   }
 
