@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect, use } from "react";
 import { Link } from "react-router-dom";
 import { DataContext } from "../context/Context";
 import NavBar from "../components/NavBar";
@@ -15,7 +15,11 @@ import {
 } from "lucide-react";
 
 function Dashboard() {
-  const { user, submittedData } = useContext(DataContext);
+  const { user, allUsers, getAllUsers, submittedData } = useContext(DataContext);
+
+  useEffect(() => {
+    getAllUsers();
+  }, []);
 
   const [dashboardData] = useState({
     point: 120,
@@ -71,8 +75,7 @@ function Dashboard() {
       },
     ],
   });
-
-  window.scrollTo({ top: 0, behavior: "smooth" });
+  // window.scrollTo({ top: 0, behavior: "smooth" });
   return (
     <>
       <NavBar />
@@ -180,7 +183,7 @@ function Dashboard() {
               YOUR RANK
             </p>
             <p className="text-[#6dbb71] text-2xl font-bold">
-              #{dashboardData.rankings.position}
+              #{user?.rank}
             </p>
             <p className="text-gray-500 text-xs mt-1">Global</p>
           </div>
@@ -216,37 +219,48 @@ function Dashboard() {
           </div>
         </div>
 
-        {/* Bottom Section */}
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Top Peers */}
           <div className="bg-[#00000049] rounded-xl p-6 border border-slate-700 shadow-xl">
             <div className="flex items-center gap-2 mb-5">
               <Users size={20} className="text-[#6dbb71]" />
-              <h3 className="text-white font-bold text-lg">Top Peers</h3>
+              <h3 className="text-white font-bold text-lg">Top Peers Leaderboard</h3>
             </div>
 
             <div className="space-y-4">
-              {dashboardData.topPeers.map((peer, index) => (
+              {allUsers.sort((a, b) => b.points - a.points).slice(0, 10).map((peer, index) => (
                 <div
-                  key={peer.id}
-                  className="flex items-center justify-between p-3 bg-[#7b7b7b1e] rounded-lg hover:bg-[#7b7b7b3a] transition-colors"
+                  key={index}
+                  className={`flex items-center justify-between p-3 ${user?.username === peer?.username ? 'border-[#6dbb71] border shadow-lg shadow-[#6dbb7167]' : 'bg-[#7b7b7b1e]'} bg-[#7b7b7b1e] rounded-lg hover:bg-[#7b7b7b3a] transition-colors`}
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-[#6dbb71] flex items-center justify-center text-sm font-bold text-green-900">
-                      {index + 1}
+                    <p className="min-w-5 audiowide text-[#6dbb71]">{index + 1}</p>
+                    <div className="w-10 h-10 rounded-full text-white bg-[#111412] font-semibold flex items-center justify-center text-sm border-2 border-[#6dbb71]">
+                      {peer?.profileUrl ? (
+                        <img
+                          src={peer.profileUrl}
+                          alt="Profile"
+                          className="w-full h-full object-cover rounded-full"
+                        />
+                      ) : (
+                        peer?.username?.charAt(0)
+                      )}
                     </div>
-                    <div>
+                    <div className="">
                       <p className="text-white font-semibold text-sm">
-                        {peer.name}
-                      </p>
-                      <p className="text-gray-400 text-xs">
-                        {peer.routes} routes
+                        {user?.username === peer?.username ? 'Me' : peer?.username}
                       </p>
                     </div>
                   </div>
-                  <p className="text-[#6dbb71] font-bold">
-                    {peer.score.toLocaleString()}
-                  </p>
+                  <div className="min-w-25">
+                    <p className="text-[#6dbb71] audiowide">
+                      {peer?.points.toLocaleString()} Points
+                    </p>
+                    <p className="text-gray-400 text-xs">
+                      Total Spent ₦{peer?.totalSpent}
+                    </p>
+                  </div>
                 </div>
               ))}
             </div>

@@ -23,7 +23,11 @@ function RoutesMap() {
     current: null,
     destination: null,
   });
-  const { fetchCoordinates, getRouteInfo } = useContext(DataContext);
+  const { fetchCoordinates, getRouteInfo, getAllUsers } = useContext(DataContext);
+
+  useEffect(() => {
+    getAllUsers()
+  }, []);
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);

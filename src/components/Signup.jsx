@@ -46,6 +46,8 @@ function Signup() {
     }
   }
 
+  window.scrollTo({ top: 0, behavior: "smooth" });
+
   return (
     <>
       <div className="flex items-center gap-3 text-sm font-semibold uppercase tracking-[0.34em] text-[#6dbb71] mt-5 ml-5">

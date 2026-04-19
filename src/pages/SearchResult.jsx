@@ -10,56 +10,38 @@ import {
   Forklift,
   Road,
 } from "lucide-react";
-import BackButton from "../components/BackButton";
 import NavBar from "../components/NavBar";
+import BackButton from "../components/BackButton";
 
-function RoutesMap() {
-  const location = useLocation();
+function searchResult() {
   const mapContainerRef = useRef();
   const [mapInfo, setMapInfo] = useState(null);
   const mapRef = useRef(null);
-  const [distance, setDistance] = useState("-- km");
-  const [routeData, setRouteData] = useState(null);
   const [coordinates, setCoordinates] = useState({
     current: null,
     destination: null,
   });
-  const { fetchCoordinates, getRouteInfo, getAllUsers } = useContext(DataContext);
+  const { fetchCoordinates, getRouteInfo, searchResult, getAllUsers } = useContext(DataContext);
+
+  const searchData = JSON.parse(searchResult);
 
   useEffect(() => {
     getAllUsers()
   }, []);
 
   useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    const jsonString = params.get("key");
-
-    if (jsonString) {
-      try {
-        // URLSearchParams already handled the %22 -> " conversion.
-        // Just parse the string directly.
-        const data = JSON.parse(jsonString);
-        setRouteData(data);
-        console.log("Decoded Object:", data);
-      } catch (error) {
-        console.error("Failed to parse route key:", error);
-      }
-    }
-  }, [location.search]);
-
-  useEffect(() => {
-    if (!routeData) return;
+    if (!searchData) return;
 
     const getCoordinates = async () => {
       const coords = await fetchCoordinates(
-        routeData.from.toLowerCase(),
-        routeData.to.toLowerCase(),
+        searchData.from.toLowerCase(),
+        searchData.to.toLowerCase(),
       );
       setCoordinates(coords);
       console.log("Coordinates:", coords);
     };
     getCoordinates();
-  }, [routeData]);
+  }, [searchData]);
 
   useEffect(() => {
     mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_KEY;
@@ -85,7 +67,7 @@ function RoutesMap() {
       const end = coordinates.destination[0];
 
       if (!start || !end) return;
-
+ 
       try {
         const query = await fetch(
           `https://api.mapbox.com/directions/v5/mapbox/driving/${start?.lon},${start?.lat};${end?.lon},${end?.lat}?steps=false&annotations=distance%2Cduration&geometries=geojson&access_token=${mapboxgl.accessToken}`,
@@ -94,8 +76,6 @@ function RoutesMap() {
         const data = json.routes[0];
 
         console.log("MapInfo Data:", data);
-        const distanceKm = (data.distance / 1000).toFixed(1);
-        setDistance(distanceKm + " km");
 
         const geojson = {
           type: "Feature",
@@ -144,7 +124,9 @@ function RoutesMap() {
     }
   }, [coordinates]);
 
-  window.scrollTo({ top: 0, behavior: "smooth" });
+  console.log();
+
+  // window.scrollTo({ top: 0, behavior: "smooth" });
 
   return (
     <div className="min-h-screen bg-[#050c1d] text-white">
@@ -153,8 +135,8 @@ function RoutesMap() {
         <section className="mx-auto max-w-7xl my-20">
           <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
             <div>
-              <p className="inline-flex rounded-full border border-[#6dbb71]/30 bg-[#6dbb71]/10 px-4 py-2 text-sm uppercase tracking-[0.24em] text-[#a8d5ab] shadow-sm">
-                Route preview
+              <p className="inline-flex rounded-full border border-[#6dbb71]/30 bg-[#6dbb71]/10 px-4 py-2 text-[12px] uppercase tracking-[0.24em] text-[#a8d5ab] shadow-sm">
+                Route Result
               </p>
               <h1 className="mt-4 text-4xl font-bold tracking-tight text-white md:text-5xl">
                 Route map & insights
@@ -162,15 +144,7 @@ function RoutesMap() {
               <p className="mt-3 max-w-2xl text-sm leading-7 text-[#9aa1b2] md:text-base">
                 Visualize the journey, review distance and duration, and compare cost information.
               </p>
-               <BackButton />
-            </div>
-            <div className="rounded-2xl border border-[#6dbb71]/10 p-4">
-              <p className="text-xs uppercase tracking-[0.24em] text-[#6dbb71]">
-                Current focus
-              </p>
-              <p className="mt-2 text-md font-semibold text-white">
-                {routeData?.from ?? "Start"} → {routeData?.to ?? "Destination"}
-              </p>
+              <BackButton />
             </div>
           </div>
 
@@ -184,12 +158,12 @@ function RoutesMap() {
                         Route overview
                       </p>
                       <h2 className="mt-3 md:text-3xl font-bold text-white">
-                        {routeData?.from ? `${routeData.from} → ${routeData.to}` : "No route selected"}
+                        {searchData?.from ? `${searchData.from} → ${searchData.to}` : "No route selected"}
                       </h2>
                     </div>
                   </div>
                 </div>
-                <div id="map-container" ref={mapContainerRef} className="w-full" style={{ height: "400px", width: "100%" }} />
+                <div id="map-container" ref={mapContainerRef} className="w-[400px" style={{ height: "400px", width: "100%" }} />
               </div>
             </div>
 
@@ -198,35 +172,35 @@ function RoutesMap() {
                 <p className="text-xs uppercase tracking-[0.24em] text-[#6dbb71]">
                   Travel metrics
                 </p>
-                <div className="mt-5 grid gap-4 max-w-md">
+                <div className="mt-5 grid gap-4 max-w-lg">
                   <div className="rounded-3xl border border-[#6dbb71]/10 bg-[#08111f]/90 p-4">
                     <p className="text-sm text-[#9aa1b2]">Distance</p>
                     <p className="mt-2 text-2xl font-semibold text-white">
-                      {distance}
+                      {searchData?.routeDetails?.distance ?? "--"}
                     </p>
                   </div>
                   <div className="rounded-3xl border border-[#6dbb71]/10 bg-[#08111f]/90 p-4">
                     <p className="text-sm text-[#9aa1b2]">Duration</p>
                     <p className="mt-2 text-2xl font-semibold text-white">
-                      {routeData?.timeOfTrip?.duration.hours}h {routeData?.timeOfTrip?.duration.minutes}m
+                      {searchData?.routeDetails?.duration ?? "--"}
                     </p>
                   </div>
                   <div className="rounded-3xl border border-[#6dbb71]/10 bg-[#08111f]/90 p-4">
                     <p className="text-sm text-[#9aa1b2]">Estimated cost</p>
                     <p className="mt-2 text-2xl font-semibold text-[#6dbb71] audiowide">
-                      ₦{routeData?.amount ?? "--"}
+                      ₦{searchData?.routeDetails?.estimatedCost ?? "--"}
                     </p>
                   </div>
                 </div>
               </div>
 
-              <div className="rounded-3xl border border-[#6dbb71]/10 bg-[#08111f]/90 p-5 max-w-md">
+              <div className="rounded-3xl border border-[#6dbb71]/10 bg-[#08111f]/90 p-5 max-w-lg">
                 <div className="flex items-center justify-between gap-3">
                   <div className="flex items-center gap-3">
                     <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#6dbb71]/15 text-[#6dbb71]">
-                      {routeData?.transportMode === "BIKE" ? (
+                      {searchData?.transportMode === "BIKE" ? (
                         <Motorbike size={20} />
-                      ) : routeData?.transportMode === "KEKE" ? (
+                      ) : searchData?.transportMode === "KEKE" ? (
                         <Forklift size={20} />
                       ) : (
                         <Bus size={20} />
@@ -234,20 +208,19 @@ function RoutesMap() {
                     </div>
                     <div>
                       <p className="text-sm text-[#9aa1b2]">Mode</p>
-                      <p className="text-sm font-semibold text-[#6dbb71]">
-                        {routeData?.transportMode ?? "N/A"}
+                      <p className="text-lg font-semibold text-white">
+                        {searchData?.transportMode ?? "N/A"}
                       </p>
                     </div>
                   </div>
                   <span className="rounded-full bg-[#6dbb71]/10 px-3 py-1 text-sm text-[#a8d5ab]">
-                    Start: {routeData?.timeOfTrip?.start ? `${routeData.timeOfTrip.start} - ` : "N/A"}
-                    End: {routeData?.timeOfTrip?.end ? ` ${routeData.timeOfTrip.end}` : " N/A"}
+                    {searchData?.date ?? "No date"}
                   </span>
                 </div>
                 <div className="mt-6 rounded-3xl border border-[#ffffff]/10 bg-[#0d1325]/95 p-4">
                   <p className="text-sm text-[#9aa1b2]">Contributed by</p>
                   <p className="mt-2 text-sm font-semibold text-[#6dbb71]">
-                    {routeData?.contributor ?? "Anonymous"}
+                    {searchData?.contributor ?? "Unknown"}
                   </p>
                 </div>
               </div>
@@ -259,4 +232,4 @@ function RoutesMap() {
   );
 }
 
-export default RoutesMap;
+export default searchResult;

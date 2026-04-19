@@ -13,16 +13,16 @@ import busImage from "../assets/green-bus.png";
 import kekeImage from "../assets/green-bike.png";
 
 function Home() {
-  const { submittedData, getFareData } = useContext(DataContext);
+  const { submittedData, getFareData, getAllUsers } = useContext(DataContext);
   const elementRef = useRef(null);
   const inViewRef = useRef(false);
   const lastScrollY = useRef(0);
   const heroReveal = useScrollReveal();
   const [routeData, setRouteData] = useState(null);
 
-  getFareData()
-
   useEffect(() => {
+    getAllUsers();
+    
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -63,7 +63,6 @@ function Home() {
         ticking = true;
       }
     };
-console.log(routeData)
     window.addEventListener("scroll", handleScroll);
     return () => {
       observer.disconnect();

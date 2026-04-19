@@ -17,7 +17,7 @@ import {
 
 function Settings() {
   const { auth, updateUser, updatePassword, deleteAccount, logout } = useAuth();
-  const { user } = useContext(DataContext);
+  const { user, getAllUsers } = useContext(DataContext);
   const navigate = useNavigate();
 
   const [profile, setProfile] = useState({
@@ -49,6 +49,10 @@ function Settings() {
   const [saving, setSaving] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
+  useEffect(() => {
+    getAllUsers()
+  }, []);
 
   useEffect(() => {
     if (!auth?.token) {

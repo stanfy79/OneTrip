@@ -1,4 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Search, Disc, MapPin } from "lucide-react";
 import { DataContext } from "../context/Context";
 import LoaderImg from "../assets/loader-gif.png";
@@ -6,7 +7,7 @@ import LoaderImg from "../assets/loader-gif.png";
 const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_KEY;
 
 function CheckRoute() {
-  const { fetchCoordinates, getRouteInfo, newRouteEntry, user } =
+  const { fetchCoordinates, getRouteInfo, newRouteEntry, user, searchResult } =
     useContext(DataContext);
   const [current, setCurrent] = useState("");
   const [destination, setDestination] = useState("");
@@ -16,6 +17,8 @@ function CheckRoute() {
     dest: false,
   });
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+
 
   const fetchSuggestions = async (query, type) => {
     if (query.length < 3) {
@@ -114,6 +117,9 @@ function CheckRoute() {
         contributor: user.username || "Anonymous",
       };
       newRouteEntry(newEntry);
+
+      navigate(`/search-result?key=${key}`);
+
     } catch (error) {
       console.error(error);
     } finally {

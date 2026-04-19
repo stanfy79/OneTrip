@@ -15,11 +15,10 @@ import {
 import PopularRoutes from "../components/PopularRoutes";
 import { useAuth } from "../context/AuthContext";
 
-const MAPBOX_TOKEN =
-  "pk.eyJ1IjoiYnVpbGRkdWRlIiwiYSI6ImNtbms4bTg5czBubjMycHFybjJ6OXlvbzkifQ.1ZXXfIP8Z3Ee_YSJ-GtQZQ";
+const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_KEY;
 
 function SubmitRoute() {
-  const { getFareData, newDataEntry, user, submitStatus, setUserActivities } =
+  const { getFareData, newDataEntry, user, submitStatus, setUserActivities, getAllUsers } =
     useContext(DataContext);
   const [transportMode, setTransportMode] = useState("");
   const [startTime, setStartTime] = useState("");
@@ -55,6 +54,10 @@ function SubmitRoute() {
       console.error("Autocomplete error:", err);
     }
   };
+
+  useEffect(() => {
+    getAllUsers()
+  }, []);
 
   useEffect(() => {
     const timeoutId = setTimeout(

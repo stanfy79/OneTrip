@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Home from './pages/Home'
 import SubmitRoute from './pages/SubmitRoute'
+import SearchResult from './pages/SearchResult'
 import Dashboard from './pages/Dashboard'
 import Trips from './components/Trips'
 import RoutesMap from './pages/RoutesMap'
@@ -27,6 +28,7 @@ function App() {
           <Route path="/auth" element={<AuthPage />} />
           <Route path="/map" element={<RoutesMap />} />
           <Route path="/map2" element={<RoutesMap2 />} />
+          <Route path="/search-result" element={<SearchResult />} />
           <Route path="/dashboard" element={
             <ProtectedRoute>
               <Dashboard />

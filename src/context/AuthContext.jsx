@@ -6,7 +6,7 @@ import axios from "axios";
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const { user } = useContext(DataContext);
+  const { user, getUserData } = useContext(DataContext);
   const [auth, setAuth] = useState(() => {
     const token = localStorage.getItem("token") || "";
     const message = "";
@@ -16,16 +16,6 @@ export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
 
   const BASE_URL = import.meta.env.VITE_BASE_URL;
-
-  // Debug: Monitor auth state changes
-  useEffect(() => {
-    console.log("Auth state updated:", auth);
-  }, [auth]);
-
-  function getUserData() {
-    const data = localStorage.getItem("fareData");
-    return data ? JSON.parse(data) : [];
-  }
 
   const generateSecureToken = (length = 32) => {
     const array = new Uint8Array(length);
@@ -71,7 +61,7 @@ export const AuthProvider = ({ children }) => {
         message: res.data.message,
       });
       localStorage.setItem("token", res.data.data?._id);
-      // localStorage.setItem("userData", JSON.stringify(userData));
+      getUserData();
 
       return navigate("/");
     } catch (err) {
@@ -145,8 +135,9 @@ export const AuthProvider = ({ children }) => {
         message: res.data.message,
       });
       localStorage.setItem("token", res.data.data?.token);
+      getUserData();
 
-      return navigate("/dashboard");
+      return navigate("/");
     } catch (error) {
       console.error("Error response:", err.response);
       setAuth({
@@ -202,7 +193,6 @@ export const AuthProvider = ({ children }) => {
         updateUser,
         updatePassword,
         deleteAccount,
-        getUserData,
       }}
     >
       {children}

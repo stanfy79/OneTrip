@@ -1,10 +1,17 @@
-import React from 'react'
+import React, { useEffect, useContext } from 'react'
+import { DataContext } from "../context/Context";
 import NavBar from '../components/NavBar'
 import PopularRoutes from '../components/PopularRoutes'
 
 function PopularRoutesPage() {
-  window.scrollTo({ top: 0, behavior: "smooth" });
+  const { getAllUsers } = useContext(DataContext);
   
+  useEffect(() => {
+    getAllUsers()
+  }, []);
+
+  window.scrollTo({ top: 0, behavior: "smooth" });
+
   return (
     <div className='flex flex-row mb-20'>
       <NavBar />

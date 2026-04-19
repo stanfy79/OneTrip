@@ -22,12 +22,15 @@ import bgImage from "../assets/hero-bg.png";
 import roadImage from "../assets/road-image.jpg";
 
 function Trips() {
-  const { submittedData } = useContext(DataContext);
+  const { submittedData, getAllUsers } = useContext(DataContext);
   const elementRef = useRef(null);
   const inViewRef = useRef(false);
   const lastScrollY = useRef(0);
 
   useEffect(() => {
+    getAllUsers();
+
+    
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {

@@ -13,6 +13,13 @@ export function DataProvider({ children }) {
   const [searchedData, setSearchedData] = useState([]);
   const [submittedData, setSubmittedData] = useState([]);
   const [submitStatus, setSubmitStatus] = useState(null);
+  const [searchResult, setSearchResult] = useState(null);
+  const [allUsers, setAllUsers] = useState([{
+    username: null,
+    profileUrl: null,
+    points: 0,
+    totalSpent: 0,
+  }]);
   const [user, setUser] = useState(null);
 
   const BASE_URL = `${import.meta.env.VITE_BASE_URL}/user`;
@@ -40,6 +47,9 @@ export function DataProvider({ children }) {
         "Estimated cost is required for a route entry. Check the route location and try again.",
       );
     }
+
+    setSearchResult(JSON.stringify(newEntry));
+    console.log(searchResult);
 
     const res = await axios.post(`${BASE_URL}/save-searched`, newEntry);
     return res.data.data;
@@ -128,6 +138,7 @@ export function DataProvider({ children }) {
       id: res.data.data?.id,
       token: res.data.data?.token,
       _id: res.data.data?._id,
+      rank: res.data.data?.rank,
     };
     setUser(userData);
     return userData;
@@ -144,6 +155,11 @@ export function DataProvider({ children }) {
       (total, entry) => total + Number(entry.amount || 0),
       0,
     );
+
+    const getRank = allUsers.sort((a, b) => b.points - a.points).findIndex((peer) => peer.username === user?.username);
+    const rank = getRank + 1;
+
+
     const userContributions = getContributions.length;
     const UpdatePoint = userContributions * 10 * (totalSpent / 1000);
     const points = Math.round(UpdatePoint);
@@ -151,15 +167,30 @@ export function DataProvider({ children }) {
       ...user,
       contribution: userContributions,
       totalSpent,
+      rank: rank,
       points,
     };
     const payload = { updatedUser };
     const res = await axios.post(`${BASE_URL}/update`, payload);
   };
+  setUserActivities();
+
+  const getAllUsers = async () => {
+    try {
+      const token = { _id: localStorage.getItem("token") }
+      const res = await axios.post(`${BASE_URL}/get-all-users`, token);
+      setAllUsers(res.data.data || []);
+      return res.data.data || [];
+    } catch (err) {
+      console.log("failed to fetched users:", err);
+      return [];
+    }
+  };
 
   useEffect(() => {
     getFareData();
     getRouteData();
+    getAllUsers;
     setUserActivities();
     getUserInfo().catch((err) =>
       console.error("failed to fetch user info:", err),
@@ -179,9 +210,12 @@ export function DataProvider({ children }) {
         submitStatus,
         searchedData,
         submittedData,
+        searchResult,
         getUserInfo,
+        getAllUsers,
         setUserActivities,
         user,
+        allUsers,
       }}
     >
       {children}
