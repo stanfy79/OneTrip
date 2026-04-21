@@ -122,7 +122,7 @@ function NavBar() {
 
       <div className="w-[100%] flex flex-row justify-between place-items-center fixed bottom-0 md:top-0 px-1 md:px-5 py-2 backdrop-blur-[5px] bg-[#00000099] md:bg-[#6dbb7122] z-50 h-18">
         <div className="flex gap-3">
-          <img src={Logo} alt="" className="w-14 rounded" />
+          <img src={Logo} alt="" className="w-14 rounded hidden md:inline" />
           <div className="hidden md:flex flex-col place-items-start">
             <h2 className="text-[#6dbb71] text-2xl font-extrabold audiowide">
               OneTrip
