@@ -9,6 +9,7 @@ import {
   Settings,
 } from "lucide-react";
 import "../App.css";
+import Logo from "../assets/logo.png";
 import { useContext, useState, useRef, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import { DataContext } from "../context/Context";
@@ -20,7 +21,7 @@ function NavBar() {
   // const [user, setUser] = useState(null);
   const activeTab = window.location.pathname;
   const menuRef = useRef(null);
-  
+
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -47,11 +48,14 @@ function NavBar() {
   return (
     <>
       <div className="w-[100%] fixed flex justify-between items-center md:hidden top-0 z-30 px-5 h-18 bg-[#00000000] backdrop-blur-[10px]">
-        <div className="flex flex-col place-items-start">
-          <h2 className="text-[#6dbb71] text-2xl font-extrabold audiowide">
-            OneTrip
-          </h2>
-          <p className="text-[#808387] text-[10px]">The Fastest Route</p>
+        <div className="flex gap-3">
+          <img src={Logo} alt="" className="w-14 rounded" />
+          <div className="flex flex-col place-items-start">
+            <h2 className="text-[#6dbb71] text-2xl font-extrabold audiowide">
+              OneTrip
+            </h2>
+            <p className="text-[#808387] text-[10px]">The Fastest Route</p>
+          </div>
         </div>
 
         <div className="flex gap-3.5 py-2 rounded-[50px] bg-[#9a9da314] place-items-center scale-75 -mr-6">
@@ -117,11 +121,14 @@ function NavBar() {
       </div>
 
       <div className="w-[100%] flex flex-row justify-between place-items-center fixed bottom-0 md:top-0 px-1 md:px-5 py-2 backdrop-blur-[5px] bg-[#00000099] md:bg-[#6dbb7122] z-50 h-18">
-        <div className="hidden md:flex flex-col place-items-start">
-          <h2 className="text-[#6dbb71] text-2xl font-extrabold audiowide">
-            OneTrip
-          </h2>
-          <p className="text-[#808387] text-[10px]">The Fastest Route</p>
+        <div className="flex gap-3">
+          <img src={Logo} alt="" className="w-14 rounded" />
+          <div className="hidden md:flex flex-col place-items-start">
+            <h2 className="text-[#6dbb71] text-2xl font-extrabold audiowide">
+              OneTrip
+            </h2>
+            <p className="text-[#808387] text-[10px]">The Fastest Route</p>
+          </div>
         </div>
         <div className="flex flex-row w-full md:w-auto justify-between text-[14px] md:gap-2 text-[#9a9da3]">
           <Link to="/">

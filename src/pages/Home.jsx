@@ -73,7 +73,7 @@ function Home() {
   return (
     <div className="flex flex-col mb-30">
       <NavBar />
-      <div className="p-6 mt-10 w-full">
+      <div className="p-6 w-full">
         <section>
           <div
             ref={heroReveal.elementRef}
