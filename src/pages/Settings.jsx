@@ -292,7 +292,6 @@ function Settings() {
                     {[
                       { label: "Email notifications", key: "email" },
                       { label: "Route alerts", key: "routeAlerts" },
-                      { label: "Product updates", key: "productUpdates" },
                     ].map((option) => (
                       <label
                         key={option.key}
@@ -313,7 +312,7 @@ function Settings() {
                 </div>
               </div>
 
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between max-w-2xl mx-auto">
+              {/* <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between max-w-2xl mx-auto">
                 <div className="space-y-1">
                   <p className="text-sm font-medium text-slate-300">
                     Preferred theme
@@ -346,7 +345,7 @@ function Settings() {
                     );
                   })}
                 </div>
-              </div>
+              </div> */}
 
               {error && (
                 <div className="rounded-2xl bg-[#7a2b2b] px-4 py-3 text-sm text-rose-200">
@@ -424,53 +423,6 @@ function Settings() {
                       </button>
                     </form>
                   </div>
-                </div>
-
-                <div className="flex items-center gap-3">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-3xl bg-[#15271f] text-[#6dbb71]">
-                    <ShieldCheck size={24} />
-                  </div>
-                  <div>
-                    <h2 className="text-lg font-semibold text-white">
-                      Privacy & sharing
-                    </h2>
-                    <p className="mt-1 text-sm text-slate-400">
-                      Control whether your contributions are visible and who can
-                      find your profile.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="mt-6 space-y-4">
-                  <label className="flex items-center justify-between gap-4 rounded-2xl border border-slate-700 bg-[#07110f] p-4 text-sm text-slate-300">
-                    <div>
-                      <p>Allow public profile</p>
-                      <span className="text-xs text-slate-500">
-                        Show your rank and route activity.
-                      </span>
-                    </div>
-                    <input
-                      type="checkbox"
-                      checked={preferences.privacy.showProfile}
-                      onChange={() => handleToggle("privacy", "showProfile")}
-                      className="h-5 w-5 rounded border-slate-500 text-[#6dbb71] focus:ring-[#6dbb71]/70"
-                    />
-                  </label>
-                  <label className="flex items-center justify-between gap-4 rounded-2xl border border-slate-700 bg-[#07110f] p-4 text-sm text-slate-300">
-                    <div>
-                      <p>Share activity anonymously</p>
-                      <span className="text-xs text-slate-500">
-                        Keep your route choices private while still contributing
-                        insights.
-                      </span>
-                    </div>
-                    <input
-                      type="checkbox"
-                      checked={preferences.privacy.shareActivity}
-                      onChange={() => handleToggle("privacy", "shareActivity")}
-                      className="h-5 w-5 rounded border-slate-500 text-[#6dbb71] focus:ring-[#6dbb71]/70"
-                    />
-                  </label>
                 </div>
               </div>
 
