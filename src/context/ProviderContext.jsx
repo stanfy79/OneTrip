@@ -14,6 +14,7 @@ export function DataProvider({ children }) {
   const [submittedData, setSubmittedData] = useState([]);
   const [submitStatus, setSubmitStatus] = useState(null);
   const [searchResult, setSearchResult] = useState(null);
+  const [allComments, setAllComments] = useState([]);
   const [allUsers, setAllUsers] = useState([{
     username: null,
     profileUrl: null,
@@ -65,6 +66,28 @@ export function DataProvider({ children }) {
       return [];
     }
   }
+
+  async function postComment(comment) {
+    try {
+      const res = await axios.post(`${BASE_URL}/comment`, comment);
+      return res.data.data;
+    } catch (e) {
+      console.log("An error occured:", e)
+    }
+  }
+
+  const getComments = async (routeId) => {
+    try {
+      const id = { routeId: routeId };
+      const res = await axios.post(`${BASE_URL}/get-comments`, id);
+      setAllComments(res.data.data || []);
+      return res.data.data || [];
+      console.log("comment:", res.data.data);
+    } catch (err) {
+      console.log("failed to fetched routes comments:", err);
+      return [];
+    }
+  };
 
   const fetchCoordinates = async (current, destination) => {
     // const API_KEY = "f1e9581bd16d23351da332b38be51206";
@@ -173,7 +196,6 @@ export function DataProvider({ children }) {
     const payload = { updatedUser };
     const res = await axios.post(`${BASE_URL}/update`, payload);
   };
-  setUserActivities();
 
   const getAllUsers = async () => {
     try {
@@ -216,6 +238,9 @@ export function DataProvider({ children }) {
         setUserActivities,
         user,
         allUsers,
+        postComment,
+        getComments,
+        allComments,
       }}
     >
       {children}

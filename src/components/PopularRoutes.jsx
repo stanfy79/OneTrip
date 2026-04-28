@@ -16,52 +16,51 @@ import { Map } from "./MapBox.jsx";
 import { Link } from "react-router-dom";
 import { DataContext } from "../context/Context";
 
-function PopularRoutes() {
-  const inViewRef = useRef(false);
-  const lastScrollY = useRef(0);
-  const { searchedData } = useContext(DataContext);
+function PopularRoutes({ routes }) {
+  // const inViewRef = useRef(false);
+  // const lastScrollY = useRef(0);
 
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          const el = entry.target;
-          if (entry.isIntersecting) {
-            el.classList.add("revealed");
-          } else {
-            el.classList.remove("revealed");
-          }
+  // useEffect(() => {
+  //   const observer = new IntersectionObserver(
+  //     (entries) => {
+  //       entries.forEach((entry) => {
+  //         const el = entry.target;
+  //         if (entry.isIntersecting) {
+  //           el.classList.add("revealed");
+  //         } else {
+  //           el.classList.remove("revealed");
+  //         }
 
-          if (el.classList.contains("observed-rotate")) {
-            inViewRef.current = entry.isIntersecting;
-          }
-        });
-      },
-      { threshold: 0.3 },
-    );
+  //         if (el.classList.contains("observed-rotate")) {
+  //           inViewRef.current = entry.isIntersecting;
+  //         }
+  //       });
+  //     },
+  //     { threshold: 0.3 },
+  //   );
 
-    // observe all matching elements
-    const nodes = document.querySelectorAll(".js-observe");
-    nodes.forEach((node) => observer.observe(node));
+  //   // observe all matching elements
+  //   const nodes = document.querySelectorAll(".js-observe");
+  //   nodes.forEach((node) => observer.observe(node));
 
-    let ticking = false;
+  //   let ticking = false;
 
-    const handleScroll = () => {
-      if (!inViewRef.current) return;
-      const currentY = window.scrollY;
-      const delta = currentY - lastScrollY.current;
-      lastScrollY.current = currentY;
-    };
+  //   const handleScroll = () => {
+  //     if (!inViewRef.current) return;
+  //     const currentY = window.scrollY;
+  //     const delta = currentY - lastScrollY.current;
+  //     lastScrollY.current = currentY;
+  //   };
 
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      observer.disconnect();
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
+  //   window.addEventListener("scroll", handleScroll);
+  //   return () => {
+  //     observer.disconnect();
+  //     window.removeEventListener("scroll", handleScroll);
+  //   };
+  // }, []);
 
-  const routeData = searchedData;
+  const routeData = routes;
 
   return (
     <div className="">
@@ -85,7 +84,7 @@ function PopularRoutes() {
             .reverse()
             .map((routes, key) => (
               <div
-              className="p-3 border-2 border-[#6dbb7142] rounded-2xl w-full min-w-[250px] reveal-scale js-observe"
+              className="p-3 border-2 border-[#6dbb7142] rounded-2xl w-full min-w-[250px] relative"
               key={key}
             >
               <div className="w-full h-50 bg-[#043e0763] rounded-lg justify-center flex items-center">

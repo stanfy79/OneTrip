@@ -13,7 +13,7 @@ import busImage from "../assets/green-bus.png";
 import kekeImage from "../assets/green-bike.png";
 
 function Home() {
-  const { submittedData, getFareData, getAllUsers } = useContext(DataContext);
+  const { submittedData, getFareData, searchedData, getAllUsers, setUserActivities } = useContext(DataContext);
   const elementRef = useRef(null);
   const inViewRef = useRef(false);
   const lastScrollY = useRef(0);
@@ -22,6 +22,7 @@ function Home() {
 
   useEffect(() => {
     getAllUsers();
+    setUserActivities();
     
     const observer = new IntersectionObserver(
       (entries) => {
@@ -136,7 +137,7 @@ function Home() {
         <section className="mt-30 border-t-2 border-[#6dbb7174] pt-10">
           <Map />
           <div className="mt-30">
-            <PopularRoutes />
+            <PopularRoutes routes={searchedData} />
           </div>
         </section>
       </div>

@@ -9,9 +9,13 @@ import {
   Motorbike,
   Forklift,
   Road,
+  User,
+  MessageSquare,
+  Send,
 } from "lucide-react";
 import NavBar from "../components/NavBar";
 import BackButton from "../components/BackButton";
+import CommentList from "../components/CommentList";
 
 function RoutesMap() {
   const location = useLocation();
@@ -23,11 +27,52 @@ function RoutesMap() {
     current: null,
     destination: null,
   });
-  const { fetchCoordinates, getRouteInfo, getAllUsers } = useContext(DataContext);
+  const [input, setInput] = useState("");
+  const [comment, setComment] = useState();
+  const { fetchCoordinates, user, getRouteInfo, getAllUsers, postComment, getComments, allComments } = useContext(DataContext);
 
   useEffect(() => {
-    getAllUsers()
+    const params = new URLSearchParams(location.search);
+    const routeId = JSON.parse(params.get("key"));
+
+    getComments(routeId._id);
+    getAllUsers();
   }, []);
+
+  const generateSecureToken = (length = 32) => {
+    const array = new Uint8Array(length);
+    window.crypto.getRandomValues(array);
+
+    return Array.from(array, (byte) => byte.toString(16).padStart(2, "0")).join(
+      "",
+    );
+  };
+
+  const handleCommentSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      if (!input.trim()) return;
+
+      const params = new URLSearchParams(location.search);
+      const routeId = JSON.parse(params.get("key"));
+      const id = generateSecureToken(16);
+
+      const commentData = {
+        content: input,
+        routeId: routeId._id,
+        username: user.username || "Anonymous",
+        profileUrl: user.profileUrl,
+      };
+
+      setComment(commentData);
+      postComment(commentData);
+      console.log("Submitting comment:", JSON.stringify(comment));
+      setInput("");
+    } catch (error) {
+      console.error("Error posting comment:", error);
+    }
+  };
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -35,11 +80,8 @@ function RoutesMap() {
 
     if (jsonString) {
       try {
-        // URLSearchParams already handled the %22 -> " conversion.
-        // Just parse the string directly.
         const data = JSON.parse(jsonString);
         setRouteData(data);
-        console.log("Decoded Object:", data);
       } catch (error) {
         console.error("Failed to parse route key:", error);
       }
@@ -55,7 +97,6 @@ function RoutesMap() {
         routeData.to.toLowerCase(),
       );
       setCoordinates(coords);
-      console.log("Coordinates:", coords);
     };
     getCoordinates();
   }, [routeData]);
@@ -84,7 +125,7 @@ function RoutesMap() {
       const end = coordinates.destination[0];
 
       if (!start || !end) return;
- 
+
       try {
         const query = await fetch(
           `https://api.mapbox.com/directions/v5/mapbox/driving/${start?.lon},${start?.lat};${end?.lon},${end?.lat}?steps=false&annotations=distance%2Cduration&geometries=geojson&access_token=${mapboxgl.accessToken}`,
@@ -92,7 +133,7 @@ function RoutesMap() {
         const json = await query.json();
         const data = json.routes[0];
 
-        console.log("MapInfo Data:", data);
+        // console.log("MapInfo Data:", data);
 
         const geojson = {
           type: "Feature",
@@ -141,13 +182,13 @@ function RoutesMap() {
     }
   }, [coordinates]);
 
-  window.scrollTo({ top: 0, behavior: "smooth" });
+  // window.scrollTo({ top: 0, behavior: "smooth" });
 
   return (
     <div className="min-h-screen bg-[#050c1d] text-white">
       <NavBar />
-      <main className="px-5 py-8 lg:px-10 xl:px-16">
-        <section className="mx-auto max-w-7xl my-20">
+      <main className="">
+        <section className="mx-auto max-w-7xl mt-20 px-5 py-8 lg:px-10 xl:px-16">
           <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
             <div>
               <p className="inline-flex rounded-full border border-[#6dbb71]/30 bg-[#6dbb71]/10 px-4 py-2 text-sm uppercase tracking-[0.24em] text-[#a8d5ab] shadow-sm">
@@ -248,8 +289,74 @@ function RoutesMap() {
                 </div>
               </div>
             </aside>
+
+            <form onSubmit={handleCommentSubmit} className="mt-6 border-t border-slate-100 pt-4">
+              <label className="mb-2 block text-sm font-semibold text-slate-400">
+                Add a Note or Feedback
+              </label>
+
+              <div className="relative">
+                <textarea
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  placeholder="Is the traffic bad? Road closed? Let others know..."
+                  rows="5"
+                  className="w-full resize-none rounded-2xl border border-slate-200 bg-gray-700 px-4 py-3 text-sm text-white transition focus:border-[#6dbb71] focus:outline-none focus:ring-2 focus:ring-[#6dbb71]/30"
+                />
+
+                <button
+                  type="submit"
+                  disabled={!input.trim()}
+                  className="absolute bottom-3 right-3 flex h-10 w-10 items-center justify-center rounded-xl bg-[#6dbb71] text-white transition hover:bg-[#5aa85e] disabled:bg-slate-300 shadow-lg shadow-[#6dbb71]/20"
+                >
+                  <Send size={18} />
+                </button>
+              </div>
+            </form>
           </div>
         </section>
+
+        <div className="bg-gray-800 my-20">
+          {comment && (
+            <div
+              key={comment.CommentId || comment._id}
+              className="flex gap-3 bg-slate-900 p-4 shadow-sm border-slate-100 transition hover:bg-slate-900/60 min-h-25"
+            >
+              <div className="h-10 w-10 flex-shrink-0 overflow-hidden rounded-full bg-slate-100 border border-slate-200">
+                {comment.profileUrl ? (
+                  <img
+                    src={comment.profileUrl}
+                    alt={comment.username}
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  <div className="flex h-full w-full items-center justify-center text-slate-400">
+                    <User size={20} />
+                  </div>
+                )}
+              </div>
+
+              <div className="flex-1">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-bold text-slate-200">
+                    {comment.username}
+                  </span>
+                  <span className="text-[10px] font-medium text-slate-400">
+                    {new Date(new Date().toISOString()).toLocaleDateString(undefined, {
+                      hour: '2-digit',
+                      minute: '2-digit'
+                    })}
+                  </span>
+                </div>
+
+                <p className="mt-1 text-sm leading-relaxed text-slate-300 max-w-130">
+                  {comment.content}
+                </p>
+              </div>
+            </div>
+          )}
+          <CommentList comments={allComments} />
+        </div>
       </main>
     </div>
   );

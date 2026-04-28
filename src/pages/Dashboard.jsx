@@ -15,67 +15,14 @@ import {
 } from "lucide-react";
 
 function Dashboard() {
-  const { user, allUsers, getAllUsers, submittedData } = useContext(DataContext);
+  const { user, allUsers, getAllUsers, submittedData, setUserActivities } = useContext(DataContext);
 
   useEffect(() => {
     getAllUsers();
+    setUserActivities()
   }, []);
 
-  const [dashboardData] = useState({
-    point: 120,
-    totalFareSpent: 14000,
-    badges: ["Elite Scout"],
-    rankings: {
-      position: 1,
-      topRoutes: 0,
-      routesSubmitted: 28,
-      followers: 0,
-    },
-    topPeers: [
-      {
-        id: 1,
-        name: "Alex Johnson",
-        avatar: "👤",
-        score: 2500,
-        routes: 35,
-      },
-      {
-        id: 2,
-        name: "Maria Garcia",
-        avatar: "👤",
-        score: 2300,
-        routes: 32,
-      },
-      {
-        id: 3,
-        name: "James Chen",
-        avatar: "👤",
-        score: 2100,
-        routes: 28,
-      },
-    ],
-    recentSubmissions: [
-      {
-        id: 1,
-        title: "Opeolu to Ikoyi - Faster",
-        timestamp: "2 days ago",
-        status: "verified",
-      },
-      {
-        id: 2,
-        title: "Ajah Bypass + BGT",
-        timestamp: "3 days ago",
-        status: "verified",
-      },
-      {
-        id: 3,
-        title: "Lekki - Epe Expressway",
-        timestamp: "5 days ago",
-        status: "verified",
-      },
-    ],
-  });
-  // window.scrollTo({ top: 0, behavior: "smooth" });
+  window.scrollTo({ top: 0, behavior: "smooth" });
   return (
     <>
       <NavBar />
@@ -190,12 +137,12 @@ function Dashboard() {
 
           <div className="bg-[#00000049] rounded-lg p-4 border border-slate-700">
             <p className="text-gray-400 text-xs font-semibold mb-2">
-              TOP ROUTES
+              TOTAL COMMENTS
             </p>
             <p className="text-[#6dbb71] text-2xl font-bold">
-              #{dashboardData.rankings.topRoutes}
+              #{user?.comments}
             </p>
-            <p className="text-gray-500 text-xs mt-1">Popular</p>
+            <p className="text-gray-500 text-xs mt-1">Commented</p>
           </div>
 
           <div className="bg-[#00000049] rounded-lg p-4 border border-slate-700">
@@ -213,7 +160,7 @@ function Dashboard() {
               FOLLOWERS
             </p>
             <p className="text-[#6dbb71] text-2xl font-bold">
-              {(dashboardData.rankings.followers / 1000).toFixed(1)}k
+              {}0.0k
             </p>
             <p className="text-gray-500 text-xs mt-1">Community</p>
           </div>
@@ -235,7 +182,7 @@ function Dashboard() {
                   className={`flex items-center justify-between p-3 ${user?.username === peer?.username ? 'border-[#6dbb71] border shadow-lg shadow-[#6dbb7167]' : 'bg-[#7b7b7b1e]'} bg-[#7b7b7b1e] rounded-lg hover:bg-[#7b7b7b3a] transition-colors`}
                 >
                   <div className="flex items-center gap-3">
-                    <p className="min-w-5 audiowide text-[#6dbb71]">{index + 1}</p>
+                    <p className="min-w-2 audiowide text-[12px] text-[#6dbb71]">{index + 1}</p>
                     <div className="w-10 h-10 rounded-full text-white bg-[#111412] font-semibold flex items-center justify-center text-sm border-2 border-[#6dbb71]">
                       {peer?.profileUrl ? (
                         <img
@@ -253,8 +200,8 @@ function Dashboard() {
                       </p>
                     </div>
                   </div>
-                  <div className="min-w-25">
-                    <p className="text-[#6dbb71] audiowide">
+                  <div className="max-w-25">
+                    <p className="text-[#6dbb71] audiowide text-[11px]">
                       {peer?.points.toLocaleString()} Points
                     </p>
                     <p className="text-gray-400 text-xs">
@@ -298,7 +245,7 @@ function Dashboard() {
                       </span>
                     </div>
 
-                    <div className="w-full flex justify-between items-center">
+                    <div className="w-full flex justify-between items-center pt-2">
                       <div className="w-[70%] flex flex-col py-2">
                         <div className="w-full flex justify-between items-center text-[#a4b5a4] text-[12px]">
                           <p className="">{entry?.from}</p>
@@ -310,7 +257,7 @@ function Dashboard() {
                           <p className="">{entry?.to}</p>
                         </div>
                       </div>
-                      <div className="text-[#a4b5a4] text-[16px] audiowide">
+                      <div className="text-[#a4b5a4] text-[16px] audiowide text-end">
                         Cost:
                         <span className="text-[#6dbb71] text-[16px] audiowide ml-2">
                           ₦{entry?.amount.toLocaleString()}

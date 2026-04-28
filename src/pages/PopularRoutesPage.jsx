@@ -4,7 +4,7 @@ import NavBar from '../components/NavBar'
 import PopularRoutes from '../components/PopularRoutes'
 
 function PopularRoutesPage() {
-  const { getAllUsers } = useContext(DataContext);
+  const { getAllUsers, searchedData } = useContext(DataContext);
   
   useEffect(() => {
     getAllUsers()
@@ -21,7 +21,7 @@ function PopularRoutesPage() {
           See the most traveled paths in Nigeria
         </p>
         <div className="flex flex-col mt-10">
-          <PopularRoutes />
+          <PopularRoutes routes={searchedData} />
         </div>
       </div>
     </div>
