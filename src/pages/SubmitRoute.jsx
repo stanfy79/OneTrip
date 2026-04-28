@@ -18,7 +18,7 @@ import { useAuth } from "../context/AuthContext";
 const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_KEY;
 
 function SubmitRoute() {
-  const { getFareData, newDataEntry, user, submitStatus, setUserActivities, getAllUsers } =
+  const { getFareData, newDataEntry, user, submitStatus, searchedData, setUserActivities, getAllUsers } =
     useContext(DataContext);
   const [transportMode, setTransportMode] = useState("");
   const [startTime, setStartTime] = useState("");
@@ -57,6 +57,7 @@ function SubmitRoute() {
 
   useEffect(() => {
     getAllUsers()
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
   useEffect(() => {
@@ -376,7 +377,7 @@ function SubmitRoute() {
           </form>
         </div>
         <div className="mt-30 border-t-2 border-[#6dbb7174] pt-10 w-full">
-          <PopularRoutes />
+          <PopularRoutes routes={searchedData} />
         </div>
       </div>
     </div>

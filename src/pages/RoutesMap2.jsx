@@ -186,7 +186,9 @@ function RoutesMap() {
     }
   }, [coordinates]);
 
-  // window.scrollTo({ top: 0, behavior: "smooth" });
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
 
   return (
     <div className="min-h-screen bg-[#050c1d] text-white">

@@ -71,6 +71,10 @@ function Home() {
     };
   }, []);
 
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
+
   return (
     <div className="flex flex-col mb-30">
       <NavBar />
@@ -102,15 +106,15 @@ function Home() {
             <p className="text-[16px] text-white mt-12">
               <span className="text-5xl text-[#b14b6f] audiowide">
                 +{submittedData?.length || 0}
-              </span>{" "}
-              Total Contributions
+              </span>
+              <p>Total Contributions</p>
             </p>
             <p className=" text-[16px] text-white mt-2">
               <span className="text-5xl text-[#b14b6f] audiowide">
                 ₦
                 {(submittedData?.reduce((sum, entry) => sum + parseFloat(entry.amount || 0), 0) || 0).toLocaleString()}
-              </span>{" "}
-              Total Spent by Commuters
+              </span>
+              <p>Total Spent by Commuters</p>
             </p>
           </div>
 

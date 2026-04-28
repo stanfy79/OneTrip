@@ -27,6 +27,7 @@ function searchResult() {
 
   useEffect(() => {
     getAllUsers()
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
   useEffect(() => {
