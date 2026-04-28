@@ -130,11 +130,11 @@ export const AuthProvider = ({ children }) => {
       };
 
       setAuth({
-        token: res.data.data?.token,
+        token: res.data.data?._id,
         user: userData,
         message: res.data.message,
       });
-      localStorage.setItem("token", res.data.data?.token);
+      localStorage.setItem("token", res.data.data?._id);
       getUserData();
 
       return navigate("/");
