@@ -187,7 +187,6 @@ export function DataProvider({ children }) {
     const UpdatePoint = userContributions * 10 * (totalSpent / 1000);
     const points = Math.round(UpdatePoint);
     const updatedUser = {
-      ...user,
       contribution: userContributions,
       totalSpent,
       rank: rank,
