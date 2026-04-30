@@ -17,6 +17,7 @@ function CheckRoute() {
     dest: false,
   });
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
   const navigate = useNavigate();
 
 
@@ -119,9 +120,11 @@ function CheckRoute() {
       newRouteEntry(newEntry);
 
       navigate(`/search-result?key=${key}`);
+      setError(false);
 
     } catch (error) {
       console.error(error);
+      setError(true);
     } finally {
       setLoading(false);
     }
@@ -204,7 +207,7 @@ function CheckRoute() {
 
         <button
           type="submit"
-          className="p-3.5 bg-[#6dbb71] text-black flex gap-3 justify-center items-center rounded-3xl mt-3 font-bold"
+          className="p-3.5 bg-[#6dbb71] text-black flex gap-3 justify-center items-center rounded-3xl mt-3 font-bold disabled:bg-[#569259]"
         >
           {loading ? (
             <img src={LoaderImg} className="w-[25px]" alt="..." />
@@ -213,6 +216,7 @@ function CheckRoute() {
           )}
           <Search size={"20"} />
         </button>
+        {error && (<p className="text-[12px] text-red-400">API request failed. Please ensure your location in accurate!</p>)}
       </form>
     </div>
   );

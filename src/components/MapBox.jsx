@@ -87,15 +87,15 @@ export const Map = () => {
     }
   };
 
-  useEffect(() => {
-    if (coordinates?.current && coordinates?.destination) {
-      // This scrolls specifically to the map div
-      mapContainerRef.current.scrollIntoView({
-        behavior: "smooth",
-        block: "center", // Aligns the top of the map with the top of the screen
-      });
-    }
-  }, [coordinates]);
+  // useEffect(() => {
+  //   if (coordinates?.current && coordinates?.destination) {
+  //     // This scrolls specifically to the map div
+  //     mapContainerRef.current.scrollIntoView({
+  //       behavior: "smooth",
+  //       block: "center", // Aligns the top of the map with the top of the screen
+  //     });
+  //   }
+  // }, [coordinates]);
 
   return <div id="map-container" ref={mapContainerRef} />;
 };
