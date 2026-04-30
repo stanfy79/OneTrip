@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import NavBar from "../components/NavBar";
 import BackButton from "../components/BackButton";
+import CommentList from "../components/CommentList";
 
 function searchResult() {
   const mapContainerRef = useRef();
