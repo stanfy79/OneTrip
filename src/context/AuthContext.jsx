@@ -180,7 +180,7 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     localStorage.removeItem("token");
     setAuth({ token: null, user: null });
-    return navigate("/auth");
+    return navigate("/auth?mode=login");
   };
 
   return (

@@ -30,12 +30,14 @@ function Login() {
 
   return (
     <>
-      <div className="flex items-center gap-3 text-sm font-semibold uppercase tracking-[0.34em] text-[#6dbb71] mt-5 ml-5">
-        <span className="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-[#6dbb71]/50 text-[#6dbb71] shadow-sm">
-          O
-        </span>
-        OneTrip
-      </div>
+      <Link to='/'>
+        <div className="flex items-center gap-3 text-sm font-semibold uppercase tracking-[0.34em] text-[#6dbb71] mt-5 ml-5">
+          <span className="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-[#6dbb71]/50 text-[#6dbb71] shadow-sm">
+            O
+          </span>
+          OneTrip
+        </div>
+      </Link>
       <div className="w-[85%] mx-auto px-8 md:px-10 xl:px-12 scale-90">
         <h1 className="text-2xl font-semibold text-white md:text-4xl">
           Welcome back

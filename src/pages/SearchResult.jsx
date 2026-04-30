@@ -21,14 +21,54 @@ function searchResult() {
     current: null,
     destination: null,
   });
-  const { fetchCoordinates, getRouteInfo, searchResult, getAllUsers } = useContext(DataContext);
+  const [input, setInput] = useState("");
+  const [comment, setComment] = useState();
+  const { fetchCoordinates, getRouteInfo, searchResult, getAllUsers, postComment, getComments, allComments } = useContext(DataContext);
 
   const searchData = JSON.parse(searchResult);
 
   useEffect(() => {
-    getAllUsers()
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    const params = new URLSearchParams(location.search);
+    const routeId = JSON.parse(params.get("key"));
+
+    getComments(routeId._id);
+    getAllUsers();
   }, []);
+
+  const generateSecureToken = (length = 32) => {
+    const array = new Uint8Array(length);
+    window.crypto.getRandomValues(array);
+
+    return Array.from(array, (byte) => byte.toString(16).padStart(2, "0")).join(
+      "",
+    );
+  };
+
+  const handleCommentSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      if (!input.trim()) return;
+
+      const params = new URLSearchParams(location.search);
+      const routeId = JSON.parse(params.get("key"));
+      const id = generateSecureToken(16);
+
+      const commentData = {
+        content: input,
+        routeId: routeId._id,
+        username: user.username || "Anonymous",
+        profileUrl: user.profileUrl,
+      };
+
+      setComment(commentData);
+      postComment(commentData);
+      console.log("Submitting comment:", JSON.stringify(comment));
+      setInput("");
+    } catch (error) {
+      console.error("Error posting comment:", error);
+    }
+  };
 
   useEffect(() => {
     if (!searchData) return;
@@ -68,7 +108,7 @@ function searchResult() {
       const end = coordinates.destination[0];
 
       if (!start || !end) return;
- 
+
       try {
         const query = await fetch(
           `https://api.mapbox.com/directions/v5/mapbox/driving/${start?.lon},${start?.lat};${end?.lon},${end?.lat}?steps=false&annotations=distance%2Cduration&geometries=geojson&access_token=${mapboxgl.accessToken}`,
@@ -127,7 +167,9 @@ function searchResult() {
 
   console.log();
 
-  // window.scrollTo({ top: 0, behavior: "smooth" });
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
 
   return (
     <div className="min-h-screen bg-[#050c1d] text-white">
@@ -228,6 +270,48 @@ function searchResult() {
             </aside>
           </div>
         </section>
+
+        <div className="bg-gray-800 my-20">
+          {comment && (
+            <div
+              key={comment.CommentId || comment._id}
+              className="flex gap-3 bg-slate-900 p-4 shadow-sm border-slate-100 transition hover:bg-slate-900/60 min-h-25"
+            >
+              <div className="h-10 w-10 flex-shrink-0 overflow-hidden rounded-full bg-slate-100 border border-slate-200">
+                {comment.profileUrl ? (
+                  <img
+                    src={comment.profileUrl}
+                    alt={comment.username}
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  <div className="flex h-full w-full items-center justify-center text-slate-400">
+                    <User size={20} />
+                  </div>
+                )}
+              </div>
+
+              <div className="flex-1">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-bold text-slate-200">
+                    {comment.username}
+                  </span>
+                  <span className="text-[10px] font-medium text-slate-400">
+                    {new Date(new Date().toISOString()).toLocaleDateString(undefined, {
+                      hour: '2-digit',
+                      minute: '2-digit'
+                    })}
+                  </span>
+                </div>
+
+                <p className="mt-1 text-sm leading-relaxed text-slate-300 max-w-130">
+                  {comment.content}
+                </p>
+              </div>
+            </div>
+          )}
+          <CommentList comments={allComments} />
+        </div>
       </main>
     </div>
   );

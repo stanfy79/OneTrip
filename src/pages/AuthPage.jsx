@@ -22,7 +22,7 @@ function AuthPage() {
   return (
     <div className="min-h-screen bg-[#080d21]">
       <NavBar />
-      <div className="flex flex-col mt-18 md:flex-row">
+      <div className="flex flex-col md:flex-row">
         <div className="bg-[#080d21] w-full">
           {mode === "signup" ? <Signup /> : <Login />}
         </div>

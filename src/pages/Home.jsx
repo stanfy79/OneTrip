@@ -103,19 +103,19 @@ function Home() {
               and navigate Nigeria's transit landscape with precision.
             </p>
 
-            <p className="text-[16px] text-white mt-12">
+            <div className="text-[16px] text-white mt-12">
               <span className="text-5xl text-[#b14b6f] audiowide">
                 +{submittedData?.length || 0}
               </span>
               <p>Total Contributions</p>
-            </p>
-            <p className=" text-[16px] text-white mt-2">
+            </div>
+            <div className=" text-[16px] text-white mt-2">
               <span className="text-5xl text-[#b14b6f] audiowide">
                 ₦
                 {(submittedData?.reduce((sum, entry) => sum + parseFloat(entry.amount || 0), 0) || 0).toLocaleString()}
               </span>
               <p>Total Spent by Commuters</p>
-            </p>
+            </div>
           </div>
 
           <div className="flex relative justify-center gap-10 mt-20">
